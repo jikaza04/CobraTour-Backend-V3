@@ -1,0 +1,918 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body{
+    font-family: "Inter", serif;
+    font-optical-sizing: auto;
+    font-weight:normal;
+    font-style:normal;
+}
+
+/* Admin Css ni siya guys  */
+@layer components{
+  .header-margin{
+    @apply
+    block
+    m-5
+    pb-2
+    ;
+  }
+}
+@layer components {
+  .admin-navbar{
+    @apply
+    overflow-hidden
+    flex
+    flex-col
+    items-start
+    text-xl
+    p-2
+    bg-admin-navgray
+    justify-start
+    w-1/5
+    h-full
+    fixed
+    ;
+  }
+}
+@layer components{
+    .admin-ul{
+        @apply
+        flex
+        flex-col
+        h-fit
+        
+        p-2
+        
+        ;
+    }
+}
+@layer components{
+  .admin-ul li{
+      @apply
+      my-2
+      ;
+  }
+}
+@layer components{
+    .admin-nav-between{
+        @apply
+        justify-between
+        ;
+    }
+}
+@layer components{
+  .admin-charts{
+    box-shadow:0px 0px 3px black;
+    @apply
+    w-auto
+    h-auto
+    bg-white
+    px-10
+    rounded-3xl
+    drop-shadow-xl
+    flex
+    items-center
+    ;
+  }
+}
+@layer components{
+  .admin-chart-layout{
+    @apply
+    flex
+    flex-row
+    justify-center
+    items-stretch
+    mb-10
+    gap-5
+    
+    ;
+  }
+}
+@layer components{
+  .admin-filter-container{
+    box-shadow:0px 0px 3px black;
+    @apply
+    bg-white
+    p-5
+    rounded-2xl
+    ;
+  }
+}
+@layer components{
+  .admin-filter-container-button{
+    @apply
+    bg-maroon-custom
+    p-3
+    rounded-2xl
+    
+  }
+}
+@layer components{
+  .button-dashboard{
+    @apply
+    bg-maroon-custom
+    p-3
+    text-white
+    rounded-lg
+    border
+    mt-2
+    duration-300
+    ;
+  }
+}
+@layer components{
+  th, td{
+    @apply
+    border-none
+   
+    p-5
+  }
+}
+@layer components{
+  .table-feedback{
+    box-shadow:0px 0px 3px black;
+    @apply
+    p-4 
+    gap-3 
+    overflow-hidden
+    border-none
+    w-full
+    h-full
+    text-center
+    rounded-3xl
+    ;
+  }
+}
+@layer components{
+  tr:nth-of-type(2n-1){
+   @apply
+   bg-grey-custom
+   ;
+ }
+}
+@layer components{
+  .search-bar{
+    @apply
+    h-8
+    p-5
+    bg-grey-custom
+    outline-none
+    rounded-3xl
+    w-96
+    text-center
+    min-w-fit
+    ;
+  }
+}
+@layer components{
+  .button-content-container{
+    @apply 
+    bg-grey-custom
+    p-5
+    w-1/3 
+    h-28
+    rounded-2xl
+    hover:shadow-lg
+    duration-150
+    ;
+  }
+}
+@layer components{
+  .admin-content-container{
+    box-shadow:0px 0px 3px black;
+    @apply
+    block
+    overflow-hidden
+    items-center
+    rounded-2xl
+    p-5
+    ;
+  }
+}
+@layer components{
+   .Content-img{
+    @apply
+    w-auto
+    h-56
+    rounded-lg
+    mb-2
+    ;
+  }
+}
+@layer components{
+  .content-icon{
+    @apply
+    p-0.5
+    bg-maroon-custom
+    rounded-sm
+    items-center
+    flex
+    
+    ;
+  }
+}
+@layer component{
+  .profile-container{
+    @apply
+    rounded-full
+    overflow-hidden
+    w-40
+    ;
+  }
+}
+@layer components{
+  .profile-label{
+    @apply
+    text-4xl
+    font-medium
+    ;
+  }
+}
+@layer components{
+  .account-container{
+    box-shadow:0px 0px 3px black;
+    @apply
+    block
+    my-4
+    p-5
+    rounded-2xl
+    
+    ;
+  }
+}
+@layer components{
+  .account-label{
+    @apply
+    text-2xl
+    font-medium
+    ;
+  }
+}
+@layer components{
+  .modal-content{
+    box-shadow:0px 0px 3px black;
+    @apply
+    flex
+    flex-row
+    overflow-hidden
+    bg-white
+    rounded-3xl
+    gap-5
+    ;
+  }
+}
+@layer components{
+  .modal-input{
+    @apply
+    border
+    border-black
+    rounded-md
+    p-2
+    ;
+  }
+}
+@layer components{
+  .input-submit{
+    @apply
+    bg-maroon-custom
+    p-2
+    text-white
+    rounded-lg
+    border
+    mt-2
+    duration-300
+    w-1/4
+    ;
+  }
+}
+@layer components{
+  .input-remove{
+    @apply
+    bg-admin-hovergray
+    p-2
+    text-maroon-custom
+    rounded-lg
+    border
+    mt-2
+    duration-300
+    w-1/4
+    ;
+  }
+}
+@layer components{
+  .text-area{
+    @apply
+    resize-none
+    ;
+  }
+}
+@layer components{
+  .modal-section{
+    z-index: 999;
+    @apply
+    bg-modal
+    fixed
+    flex
+    items-center
+    w-full
+    h-full
+    justify-center
+    top-0
+    left-0
+    overflow-hidden
+    
+    ;
+  }
+}
+@layer components{
+  .modal-change-button{
+    @apply
+    absolute 
+    text-white
+    my-2
+    p-2
+    bg-maroon-custom
+    font-semibold
+    rounded-md
+    ;
+  }
+}
+@layer components{
+  .modal-add-button{
+    @apply
+    text-white
+    my-2
+    p-2
+    bg-maroon-custom
+    font-semibold
+    rounded-md
+    ;
+  }
+}
+@layer components{
+  input{
+    @apply
+    cursor-pointer
+    ;
+  }
+}
+@layer components{
+  .account-submit{
+    @apply
+    p-2
+    bg-maroon-custom
+    text-white
+    rounded-lg
+    ;
+  }
+}
+@layer components{
+  .account-cancel{
+    @apply
+    bg-admin-hovergray
+    p-2
+    text-maroon-custom
+    rounded-lg
+    ;
+  }
+}
+@layer components {
+.login-section{
+  @apply
+  flex
+  flex-row
+  items-center
+  ;
+  }
+}
+@layer components{
+  .login-image{
+    height: 100vh;
+    @apply
+    w-1/2
+    ;
+  }
+}
+@layer components{
+  .login-container{
+    @apply
+    flex
+    flex-col
+    justify-center
+    items-center
+    w-full
+    ;
+  }
+}
+@layer components{
+  .login-input{
+    @apply
+    outline-none
+    border
+    border-admin-hovergray
+    p-2
+    rounded-md 
+    focus:border-maroon-custom
+  bg-admin-hovergray
+    ;
+  }
+}
+@layer components{
+  .login-submit{
+    @apply
+    border 
+    border-maroon-custom
+    text-white
+    bg-maroon-custom
+    p-1 
+    rounded-md 
+    
+    ;
+  }
+}
+/* Client ni mga CSS*/
+
+@layer components{
+  
+  .client-nav{
+    
+    @apply
+    justify-between
+    flex
+    items-center
+    p-3
+    bg-dark-gray
+    text-white
+    w-full
+    font-medium
+    fixed
+    h-fit
+    flex-col
+    text-center
+    overflow-hidden
+    ;
+  }
+  @screen lg {
+    .client-nav{
+    @apply
+    bg-dark-gray
+    justify-between
+    text-lg
+    w-full
+    flex-row
+    text-balance
+    items-center
+    h-fit
+    p-0
+    ;
+    }
+  }
+}
+@layer components{
+  .client-nav ul{
+    @apply flex-col gap-2 justify-center;
+  }
+  @screen lg{
+    .client-nav ul{
+      @apply flex flex-row gap-5 justify-center ;
+    }
+  }
+}
+@layer components{
+  .client-nav ul li{
+    @apply
+    box-border
+    p-5
+    duration-300
+    ;
+  }
+}
+@layer components{
+  .client-nav ul li{
+    @apply
+    hover:text-light-maroon
+    ;
+  }
+}
+@layer components{
+  .ctlogo{
+    @apply
+    p-1
+    bg-white
+    rounded-full
+    
+    
+    ;
+  }
+}
+@layer components{
+  .explore{
+    @apply
+    bg-maroon-custom
+    rounded-lg
+    py-2
+    px-3
+    ;
+  }
+  @screen lg{
+    .explore{
+      @apply
+        py-3
+        px-5
+      ;
+    }
+  }
+}
+@layer components{
+  .client-background{
+    @apply
+    bg-dark-gray
+    
+    ;
+  }
+}
+@layer components{
+  .home-image{
+    @apply
+    w-full
+    min-w-96
+    lg:rounded-md
+    ;
+  }
+  @screen lg{
+    .home-image{
+      @apply
+      w-full
+      
+      lg:w-full
+      ;
+    }
+  }
+}
+@layer components{
+  .home-head-text{
+    @apply
+    text-white
+      text-3xl
+      py-2
+      font-bold
+      lg:text-4xl
+    ;
+  }
+}
+@layer components{
+  .home-p-text{
+    @apply
+    text-sm
+    p-2
+    md:text-lg
+    ;
+  }
+}
+@layer components {
+  .home-button-explore{
+    @apply
+    w-fit
+    bg-maroon-custom
+    p-3
+    rounded-lg
+    text-lg
+    border-maroon-custom
+    border-2
+    duration-300
+    ;
+  }
+  @screen lg{
+    .home-button-explore:hover{
+      @apply
+      border-white
+        border-2
+        ease-linear
+        bg-transparent
+      ;
+    }
+  }
+}
+@layer components{
+  .home-section-layout{
+    @apply
+    bg-[url("Client/Images/Hompage.png")]
+      bg-no-repeat
+      bg-cover
+      h-screen
+      w-full
+      
+    ;
+  }
+  @screen lg{
+    .home-section-layout{
+    @apply
+      flex
+      
+      gap-5
+      items-center
+      
+    ;
+    }
+  }
+}
+@layer components{
+  .home-search-container{
+    @apply
+    bg-transparent
+    text-white
+    p-1
+    rounded-lg
+    border-2
+    border-white
+    size-full
+    outline-none
+    hover:border-light-maroon
+    duration-300
+    my-5
+    flex
+    flex-row
+    focus:border-light-maroon
+    ;
+  }
+}
+@layer components{
+  .search-input {
+    
+  @apply
+  bg-transparent
+  text-white
+  w-full
+  p-2
+  outline-none
+  border-none
+  appearance-none
+  
+  ;
+  }
+}
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+@layer components{
+  .gallery-section{ 
+    @apply
+    grid
+    grid-rows-1
+    items-stretch
+    min-h-screen
+    w-full
+    overflow-hidden
+    md:grid-cols-2
+    md:gap-5
+    cursor-pointer
+    ;
+  }
+  @screen lg{
+    .gallery-section{
+      @apply
+      grid-cols-3
+      w-full
+      gap-5
+      
+      ;
+    }
+  }
+}
+@layer components{
+  *::-webkit-scrollbar{
+    @apply
+    hidden
+    
+    ;
+  }
+}
+@layer components{
+  .gallery-container{
+    @apply
+    flex
+    flex-col
+    justify-center
+    bg-transparent
+    border-white
+    border
+    p-2
+    rounded-lg
+    my-5
+    lg:my-0
+    duration-300
+    ;
+  }
+  @screen lg{
+    .gallery-container img:hover{
+      @apply
+      duration-300
+      brightness-50
+      ;
+    }
+  }
+}
+@layer components{
+  .modal-gallery-container{
+    @apply
+    flex
+    flex-col
+    gap-5
+    items-stretch
+    justify-center
+    m-5
+    bg-dark-gray
+    p-0
+    rounded-3xl
+    overflow-hidden
+    ;
+  }
+  @screen lg{
+    .modal-gallery-container{
+      @apply
+      flex-row
+      m-10
+      ;
+    }
+  }
+}
+
+@layer components{
+  .gal-cont-inf{
+    @apply
+    flex 
+    flex-col 
+    justify-start
+    size-full
+    border 
+    border-white 
+    p-2
+    text-wrap
+    rounded-md 
+    whitespace-normal 
+    break-words
+    text-justify
+    mx-5
+    w-fit 
+    ;
+  }
+}
+@layer components{
+  .home-about-container{
+    
+    @apply
+    bg-home
+    blur-home
+    overflow-hidden
+    box-content
+    flex
+    flex-col
+    justify-start
+    items-center
+    break-words
+    rounded-2xl
+    text-wrap
+    h-full
+    m-0
+    p-0
+    top-0
+    ;
+  }
+}
+@layer components{
+  .about-section-layout{
+    @apply
+     m-10 gap-5 overflow-hidden grid grid-flow-row  items-stretch justify-center
+     
+     ;
+
+  }
+  @screen lg{
+    .about-section-layout{
+    @apply
+    grid-flow-col
+    m-20
+    ;
+    }
+  }
+}
+@layer components{
+  .faq-faqs-container{
+    @apply
+    
+    rounded-lg
+    shadow-xl
+    items-center
+    bg-bg-gray-v2
+    p-5
+    my-3
+    break-words
+    ;
+  }
+}
+@layer components{
+  .footer-feedback{
+    @apply
+    bg-maroon-custom
+    rounded-md
+    p-2
+    ;
+  }
+}
+@layer components{
+  .footer-socials{
+    @apply
+    flex flex-col justify-center items-center gap-y-2 text-center border-none cursor-pointer
+    ;
+  }
+  @screen lg{
+    .footer-socials img:hover{
+      @apply
+      scale-105
+      duration-300
+      border-b
+      border-light-maroon
+      ;
+    }
+  }
+}
+@layer components{
+  .button-feedback{
+    @apply
+    bg-maroon-custom
+    py-2
+    px-5
+    rounded-lg
+    border-maroon-custom
+    border
+    ;
+  }
+}
+@layer components{
+   .disabled {
+    @apply
+    bg-transparent
+    border-white
+    border
+    rounded-lg
+    py-2
+    px-5
+    opacity-50
+    ;
+  }
+}
+@layer components{
+  .feedback-form{
+    @apply
+    gap-x-5 gap-y-5 flex flex-col my-5 w-full
+    ;
+  }
+}
+@layer components{
+  .feedback-form input,.feedback-form textarea{
+    @apply
+    outline-none
+    bg-bg-gray-v2
+    p-3
+    rounded-xl
+    duration-300
+    resize-none
+    focus:bg-transparent
+    focus:border-white
+    focus:border
+    ;
+  }
+}
+@layer components{
+  .feedback-form  textarea{
+    @apply
+    h-48
+    ;
+  }
+}
+@layer components{
+  .dropdown-choice{
+    @apply
+    flex
+    flex-col
+    gap-y-1
+    text-center
+    duration-300
+    ;
+  }
+}
+@layer components{
+  .dropdown-choice li{
+    @apply
+    cursor-pointer
+    hover:bg-dark-gray
+    duration-300
+    p-1
+    rounded-md
+    hover:shadow-xl
+    ;
+  }
+}
