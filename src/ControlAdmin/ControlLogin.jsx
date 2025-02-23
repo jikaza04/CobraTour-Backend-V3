@@ -29,6 +29,7 @@ function ControlLogin() {
                 <button type="button" className="border-maroon-custom border p-1 rounded-md duration-300 hover:bg-maroon-custom hover:text-white">
                     Forgot Password
               </button>
+              <Link to ="/controlDashboard"><button className="border-maroon-custom border p-1 rounded-md duration-300 hover:bg-maroon-custom hover:text-white w-full">Demo Login</button></Link>
               </span>
               <div className="flex justify-between"> 
               </div>

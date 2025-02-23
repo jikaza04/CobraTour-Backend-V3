@@ -52,13 +52,13 @@ function ControlDashboard() {
     </section>
     <section className="control-summary-section">
       <div className="control-summary-container">
-      <img src={ControlTotal} alt="" />
+      <img src={ControlTotal} alt="" className='lg:size-auto size-28 ' />
       <label>Total contributors: </label>
       <span className="text-maroon-custom">00</span>
       </div>
       <div className="control-summary-container cursor-pointer" onClick={openModal}>
-      <img src={ControlAdd} alt="" />
-      <img src={AddIcon} alt="" />
+      <img src={ControlAdd} alt="" className='lg:size-auto size-28 '/>
+      <img src={AddIcon} alt="" className='lg:size-auto size-8 '/>
       <label>Add Contributor </label>
       
       </div>
