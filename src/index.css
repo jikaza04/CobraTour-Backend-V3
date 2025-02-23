@@ -21,6 +21,22 @@ body{
   }
 }
 @layer components {
+  nav{
+    @apply
+    overflow-hidden
+    flex
+    flex-col
+    items-start
+    text-xl
+    p-2
+    bg-admin-navgray
+    justify-start
+    w-1/2
+    h-full
+    fixed
+    ;
+  }
+    @screen lg{
   .admin-navbar{
     @apply
     overflow-hidden
@@ -35,6 +51,7 @@ body{
     h-full
     fixed
     ;
+    }
   }
 }
 @layer components{
@@ -315,8 +332,9 @@ body{
 }
 @layer components{
   .modal-section{
-    z-index: 999;
+    
     @apply
+    
     bg-modal
     fixed
     flex
@@ -936,6 +954,15 @@ input[type="search"]::-webkit-search-cancel-button {
 @layer components{
   .control-summary-section{
     @apply
+    flex
+    flex-col
+    gap-y-5
+    m-3
+    ;
+  }
+  @screen lg{
+  .control-summary-section{
+    @apply
     grid
     grid-cols-2
     gap-x-5
@@ -943,6 +970,7 @@ input[type="search"]::-webkit-search-cancel-button {
     m-5
     overflow-y-auto
     ;
+    }
   }
 }
 @layer components{
@@ -1033,13 +1061,33 @@ input[type="search"]::-webkit-search-cancel-button {
     p-5
     rounded-xl
     h-v-modal
+    w-w-nav
+    flex
+    flex-col
+    justify-start
+    items-center
+    gap-y-5
+    
+    ;
+  }
+  @screen lg{ 
+    .modal-control{
+    @apply
+    overflow-y-auto
+    bg-white
+    shadow-box-sec
+    p-5
+    rounded-xl
+    h-v-modal
     w-1/2
     flex
     flex-col
     justify-start
     items-center
     gap-y-5
+    
     ;
+    }
   }
 }
 @layer components{
@@ -1069,6 +1117,14 @@ input[type="search"]::-webkit-search-cancel-button {
   }
 }
 @layer components{
+  .modal-control article ul li{
+    @apply
+    break-all
+    whitespace-break-spaces
+    ;
+  }
+}
+@layer components{
   .control-login{
     @apply
     flex
@@ -1088,5 +1144,38 @@ input[type="search"]::-webkit-search-cancel-button {
     p-2
     rounded-full
     ;
+  }
+}
+@layer components{
+  .control-profile{
+    @apply
+    overflow-hidden
+    rounded-full
+    border
+    bg-transparent
+    object-none
+    relative
+    items-center
+    flex
+    justify-center
+    w-32
+    h-32
+    p-0
+    ;
+  }
+}
+@layer components{
+
+  .general-nav{
+    @apply
+    bg-dark-gray p-2 z-bring-front m-1 rounded-full fixed
+    ;
+  }
+  @screen lg{
+    .general-nav{
+    @apply
+    hidden
+    ;
+    }
   }
 }
