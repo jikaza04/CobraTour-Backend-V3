@@ -30,6 +30,7 @@ export default {
         'admin-hovergray': '#C3C3C3',
         'maroon-custom': '#900710',
         'light-maroon': '#D1565E',
+        'control-border': '#CEC1C1',
       },
       textColor:{
         'admin-navgray': '#E9E9E9',
@@ -46,6 +47,7 @@ export default {
         'sm':'600px',
         'md':'800px',
         'iso': '350px',
+        'v-modal': '95%',
       },
       fill:{
         'light-maroon': '#D1565E',
@@ -53,6 +55,9 @@ export default {
       blur:{
         'extreme': '150px',
         'home': 'blur(24.899999618530273px)',
+      },
+      boxShadow:{
+        'box-sec':"0px 4px 10px 0px rgba(0, 0, 0, 0.25);",
       }
     },
   },

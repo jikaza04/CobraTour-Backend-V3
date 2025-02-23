@@ -6,7 +6,7 @@ import DashboardIcon from './AdminIcons/Dashboard.svg';
 import ContentIcon from './AdminIcons/Content.svg';
 import AccountIcon from './AdminIcons/Account.svg';
 import LogoutIcon from './AdminIcons/logout.svg';
-import './Javascript/navbar.js';
+
 
 const AdminNavBar = () => {
     const [activeItem, setActiveItem] = useState(null);

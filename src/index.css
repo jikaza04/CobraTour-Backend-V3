@@ -52,7 +52,10 @@ body{
 @layer components{
   .admin-ul li{
       @apply
+      items-center
+      flex
       my-2
+      gap-x-3
       ;
   }
 }
@@ -253,7 +256,7 @@ body{
 }
 @layer components{
   .modal-content{
-    box-shadow:0px 0px 3px black;
+    
     @apply
     flex
     flex-row
@@ -261,6 +264,7 @@ body{
     bg-white
     rounded-3xl
     gap-5
+    shadow-box-sec
     ;
   }
 }
@@ -385,15 +389,26 @@ body{
   flex
   flex-row
   items-center
+  justify-center
+  h-screen
+  w-screen
   ;
   }
 }
 @layer components{
   .login-image{
-    height: 100vh;
     @apply
-    w-1/2
+    hidden
     ;
+  }
+  @screen lg{
+  .login-image{
+    @apply
+    h-screen
+    w-1/2
+    block
+    ;
+  }
   }
 }
 @layer components{
@@ -414,8 +429,10 @@ body{
     border
     border-admin-hovergray
     p-2
+    duration-300
     rounded-md 
     focus:border-maroon-custom
+    focus:bg-transparent
   bg-admin-hovergray
     ;
   }
@@ -913,6 +930,163 @@ input[type="search"]::-webkit-search-cancel-button {
     p-1
     rounded-md
     hover:shadow-xl
+    ;
+  }
+}
+@layer components{
+  .control-summary-section{
+    @apply
+    grid
+    grid-cols-2
+    gap-x-5
+    items-stretch
+    m-5
+    overflow-y-auto
+    ;
+  }
+}
+@layer components{
+  .control-summary-container{
+    @apply
+    flex
+    flex-row
+    bg-admin-navgray
+    items-center
+    p-5
+    gap-2
+    rounded-xl
+    text-xl
+    ;
+  }
+}
+@layer components{
+  .control-contents{
+    @apply
+    flex
+    flex-col
+    items-center
+    overflow-auto
+    bg-transparent
+    border
+    border-control-border
+    rounded-xl
+    w-full
+   
+    ;
+  }
+}
+@layer components{
+  .control-form{
+    @apply
+    flex
+    flex-row
+    gap-x-3
+    p-2
+    w-full
+    sticky
+    top-0
+    border-b
+    bg-white
+    border-control-border
+    
+    ;
+  }
+}
+@layer components{
+  .control-form input{
+    @apply
+    outline-none
+    border
+    focus:outline-cyan-900
+    focus:outline-1
+    p-2
+    rounded-md
+    duration-300
+    w-full
+    ;
+  }
+}
+@layer components{
+  .control-account-list{
+    @apply
+    w-full
+    p-3
+    duration-300
+    delay-75
+    hover:bg-admin-navgray
+    border-b
+    border-b-control-border
+    flex
+    flex-row
+    items-center  
+    gap-x-5
+    cursor-pointer
+    ;
+  }
+}
+@layer components{
+  .modal-control{
+    @apply
+    overflow-y-auto
+    bg-white
+    shadow-box-sec
+    p-5
+    rounded-xl
+    h-v-modal
+    w-1/2
+    flex
+    flex-col
+    justify-start
+    items-center
+    gap-y-5
+    ;
+  }
+}
+@layer components{
+  .modal-control form{
+    @apply
+    flex
+    flex-col
+    items-start
+    justify-start
+    w-full
+    gap-y-2
+    ;
+  }
+}
+@layer components{
+  .modal-control form input{
+    @apply
+    outline-0
+    border-2
+    w-full
+    p-2
+    rounded-lg
+    duration-300
+    focus:outline-cyan-900
+    
+    ;
+  }
+}
+@layer components{
+  .control-login{
+    @apply
+    flex
+    flex-row-reverse
+    items-center
+    justify-center
+    h-screen
+    w-screen
+    ;
+  }
+}
+@layer components{
+  .control-switch-icon{
+    @apply
+    bg-maroon-custom
+    size-9
+    p-2
+    rounded-full
     ;
   }
 }

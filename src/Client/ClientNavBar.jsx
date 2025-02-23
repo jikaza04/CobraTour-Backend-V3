@@ -56,7 +56,7 @@ function ClientNavBar() {
             <Link to='/clientFeedback'>Feedback</Link>
           </li>
           <li>
-            <Link target="_blank" to='/adminLogin'>Admin</Link>
+            <Link to='/adminLogin'>Admin</Link>
           </li>
         </ul>
         </motion.div>

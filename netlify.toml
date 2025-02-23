@@ -1,8 +1,4 @@
 [build]
-  publish = "src"        # Directory to deploy (relative to root)
-  command = "npm run build" # Build command (what Netlify will run)
-  functions = "netlify/functions" # (Optional) If you're using Netlify functions
-
-# (Optional) Define a Node.js version
-[build.environment]
-  NODE_VERSION = "16"
+  publish = "dist"        # 
+  command = "npm run build" # 
+  functions = "netlify/functions" 

@@ -54,7 +54,7 @@ function App() {
             {/* Control Admin ni Aejay */}
             <Route path='/controlDashboard' element={<ControlDashboard/>}/>
             <Route path ='/controlAccount' element={<ControlAccount/>}/>
-            <Route path = '/controlLogout' element={<ControlLogin/>}/>
+            <Route path = '/loginControl' element={<ControlLogin/>}/>
           </Routes>
         </section>
       </div>
