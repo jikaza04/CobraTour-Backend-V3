@@ -42,12 +42,14 @@ export default {
         'w-nav': '98vw',
         'w-90vw': '90vw',
         'iso': '300px',
+        '500': '500px',
       },
       height:{
         'sm':'600px',
         'md':'800px',
         'iso': '350px',
         'v-modal': '95%',
+        '400': '400px',
       },
       fill:{
         'light-maroon': '#D1565E',
@@ -58,6 +60,7 @@ export default {
       },
       boxShadow:{
         'box-sec':"0px 4px 10px 0px rgba(0, 0, 0, 0.25);",
+        'box-contain': '0px 0px 3px black',
       },
       zIndex:{
         'bring-front': "999",

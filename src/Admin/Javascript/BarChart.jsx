@@ -55,7 +55,7 @@ const BarChart = () => {
     }, []);
 
     return (
-        <div style={{ width: '500px', height: '400px' }}>
+        <div className='h-96 max-w-full min-w-96    lg:w-500 lg:h-400'>
             <canvas ref={chartRef}></canvas>
         </div>
     );

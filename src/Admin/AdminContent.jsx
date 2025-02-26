@@ -31,24 +31,24 @@ function AdminContent() {
             <section className="m-5 inter">
                 <div className="flex gap-5 items-center">
                     <label className="text-4xl font-semibold">Contents</label>
-                    <span className='flex items-center relative'>
-                        <img src={SearchIcon} alt='SearchIcon' className='w-8 absolute left-1' />
-                        <input type='search' name="SearchBar" placeholder='Search' className="search-bar" />
+                    <span className="search-bar" >
+                        <img src={SearchIcon} alt='SearchIcon'  />
+                        <input type='search' name="SearchBar" placeholder='Search' className='bg-transparent outline-none' />
                     </span>
                 </div>
 
-                <section className='my-10 flex justify-center items-center gap-5'>
-                    <button className='flex justify-center items-center button-content-container' onClick={openAddModal}>
+                <section className='my-10 grid grid-cols-2  items-center gap-5'>
+                    <button className='button-content-container' onClick={openAddModal}>
                         <img src={AddIcon} alt='Add' />
                         <label className='font-medium'>Add Content</label>
                     </button>
-                    <button className='flex justify-center items-center button-content-container' onClick={openDeleteModal}>
+                    <button className='button-content-container' onClick={openDeleteModal}>
                         <img src={DeleteAll} alt='Delete All' />
                         <label className='font-medium'>Delete All Content</label>
                     </button>
                 </section>
 
-                <section className='inline-flex items-start justify-center gap-5'>
+                <section className='grid lg:grid-cols-3 gap-y-2 gap-5'>
                     <div className='admin-content-container'>
                         <img src={PH} alt='phinmahall' className='Content-img' />
                         <label className='font-medium text-xl'>Phinmahall</label>
@@ -82,11 +82,11 @@ function AdminContent() {
                 {/*warning Modal*/}
                 {deleteModal && ( 
                 <section id='warning-modal' className='modal-section' onClick={closeDeleteModal}>
-                    <div className='modal-content justify-center items-center size-3/5' onClick={(e) => e.stopPropagation()}>
-                        <span className='flex flex-col items-center'>
+                    <div className='modal-content lg:size-3/5' onClick={(e) => e.stopPropagation()}>
+                        <span className='flex flex-col text-center items-center'>
                         <img src={AdminWarning} alt='Warning' className='w-36'/>
                         <h1 className='font-bold text-2xl'>WARNING!</h1>
-                        <label >ARE YOU SURE TO CONTINUE THIS ACTION?</label>
+                        <label className='lg:text-base text-sm'>ARE YOU SURE TO CONTINUE THIS ACTION?</label>
                         <form>
                             <input type='submit' value="Continue" name="deleteAll" className='input-submit w-72'></input>
                         </form>
@@ -97,11 +97,11 @@ function AdminContent() {
                 {/* Add Modal */}
                 {addModal && (
                     <section id='add-modal' className='modal-section' onClick={closeAddModal}>
-                        <div className='modal-content size-3/5' onClick={(e) => e.stopPropagation()}>
-                            <span className='flex flex-col w-full justify-center items-center border-dashed border-2 m-1 rounded-3xl border-maroon-custom'>
+                        <div className='modal-content w-w-nav  lg:size-3/5' onClick={(e) => e.stopPropagation()}>
+                            <div className='flex flex-col size-full justify-center overflow-hidden items-center border-dashed border-2 m-1 rounded-3xl border-maroon-custom'>
                                 <img src={AdminContentInsert} className='h-9' alt="Content" />
                                 <button className='modal-add-button'>Add Image</button>
-                            </span>
+                            </div>
                             <form className='flex flex-col gap-1 p-2 size-full '>
                                 <label className='font-semibold text-2xl'>Add Content</label>
                                 <label>Location Name:</label>

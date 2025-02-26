@@ -38,13 +38,13 @@ function App() {
 
   return (
     <div className={isClientPage ? 'client-background' : ''}>
-      <div className="flex justify-between">
+      <div className="flex lg:justify-between">
         {isClientPage && <ClientNavBar />}
         {isControlAdmin && <ControlNavBar />}
         {isAdminPage && <AdminNavBar />}
 
         <section
-          className={isLoginPage ? 'w-full' : isControlAdmin ? 'w-4/5' : isClientPage ? 'w-full' : 'w-4/5'}
+          className={isLoginPage ? 'w-full' : isControlAdmin ? 'w-4/5' :isAdminPage? "lg:w-4/5 w-full" : isClientPage ? 'w-full' : 'w-4/5'}
           style={{ width: isMobileView && isControlAdmin ? '100vw' : '' }}
         >
           <Routes>

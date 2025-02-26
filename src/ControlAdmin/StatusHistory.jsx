@@ -20,7 +20,7 @@ switch (status) {
   return (
     <>
     <section className="flex flex-row items-center gap-1">
-    <span style={{backgroundColor:statuscolor, padding:"10px", borderRadius:"100%"}}></span>
+    <span style={{backgroundColor:statuscolor, padding:"5px", borderRadius:"100%"}}></span>
       {status ? `${status}` : 'No status provided'}
     </section>
     </>

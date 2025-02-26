@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import BarChart from './Javascript/BarChart.jsx';
 import TotalFeedback from "./AdminIcons/TotalFeedback.svg";
 import LocationsFeedback from "./AdminIcons/LocationsFeedback.svg";
@@ -6,6 +6,7 @@ import WebsitesFeedback from "./AdminIcons/WebsitesFeedback.svg";
 
 const AdminDashboard = () => {
     const [activeTable, setActiveTable] = useState("Locations-Feedback");
+    
 
     return (
         <header className="header-margin inter">
@@ -58,6 +59,7 @@ const AdminDashboard = () => {
 
             {/* Locations Feedback Table */}
             {activeTable === "Locations-Feedback" && (
+            <section className="overflow-auto">
                 <table className="table-feedback my-4">
                     <thead>
                             <th>Id</th>
@@ -90,10 +92,12 @@ const AdminDashboard = () => {
                         </tr>
                     </tbody>
                 </table>
+                </section>
             )}
 
             {/* Web Feedback Table */}
             {activeTable === "Web-Feedback" && (
+                <section className="overflow-auto lg:overflow-hidden">
                 <table className="table-feedback my-4">
                     <thead>
                         <>
@@ -128,6 +132,7 @@ const AdminDashboard = () => {
                         </tr>
                     </tbody>
                 </table>
+                </section>
             )}
         </header>
     );

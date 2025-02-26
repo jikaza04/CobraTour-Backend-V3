@@ -6,7 +6,6 @@ import SearchIcon from './AdminIcons/search.svg';
 import AccountProfile from './AdminIcons/account-profile.svg'
 import HistoryIcon from './AdminIcons/history.svg'
 import HistoryModal from './AdminIcons/historyModal.svg'
-
 import { useState } from 'react';
 import StatusHistory from './StatusHistory'
 import { motion } from 'motion/react';
@@ -117,7 +116,7 @@ function ControlDashboard() {
           <label>Sample Email</label>
           </div>
           <div className='flex flex-col items-center justify-stretch text-center mx-1'>
-          <StatusHistory status="Updated"/>
+          <StatusHistory status="Removed"/>
           <label >02/09/25</label>
           </div>
         </div>
@@ -158,6 +157,7 @@ function ControlDashboard() {
       initial={{opacity:0}}
       animate={{opacity:1}}
       transition={{duration:0.5}}
+      style={{zIndex:1000}}
       >
     <section className='modal-section overflow-hidden'> 
     <div className='modal-control'>
@@ -201,7 +201,7 @@ function ControlDashboard() {
       <div className='modal-control'> 
         <img src={HistoryModal} alt="" className='size-64' />
         <label className='text-2xl font-semibold'>History</label>
-        <article className='grid grid-cols-3 size-full justify-evenly break-before-all items-start'>
+        <article className='grid grid-cols-2 text-sm lg:text-xl lg:grid-cols-3 size-full justify-evenly break-before-all items-start'>
           <ul className='flex flex-col items-center'>
             <label className='font-semibold text-lg'>Date</label>
             <li>02/24/25</li>
