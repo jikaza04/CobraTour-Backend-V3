@@ -42,7 +42,7 @@ function ControlAccount() {
             <label className='text-maroon-custom'>Change Username:</label>
             <input type="text" name="newUserName" placeholder='New Username' className='modal-input'/>
             <span className='flex flex-row gap-2 items-center justify-end my-2'>
-              <button  onClick={closeNewUsername} className='account-cancel'>Cancel</button>
+              <button type='button'  onClick={closeNewUsername} className='account-cancel'>Cancel</button>
               <input type='submit' name='newusername' className='account-submit'></input>
             </span>
           </form>
@@ -59,7 +59,7 @@ function ControlAccount() {
             <label className='text-maroon-custom'>Change Password:</label>
             <input type="password" name="newPassword" placeholder='New Password' className='modal-input'/>
             <span className='flex flex-row gap-2 items-center justify-end my-2'>
-              <button onClick={closeNewPassword} className='account-cancel'>Cancel</button>
+              <button type='button' onClick={closeNewPassword} className='account-cancel'>Cancel</button>
               <input type='submit' name='newusername' className='account-submit'></input>
             </span>
           </form>
