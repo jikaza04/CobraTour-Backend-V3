@@ -1,91 +1,211 @@
-import { useState } from 'react'
-import DropDown from './Images/dropdown.svg'
-import { easeIn } from 'motion/react';
-import { motion } from 'motion/react';
+import { useState } from "react";
+import DropDown from "./Images/dropdown.svg";
+import SuccessIcon from "./Icons/success.svg";
+import { motion } from "framer-motion";
+import { db } from "../config/firebase";
+import { collection, addDoc } from "firebase/firestore";
+
 function ClientFeedback() {
-  const [isDropDownEnabled, setIsDropdownEnabled] = useState(false);
-  const [dropDown, setDropDown] = useState (true);
-  const [satisfaction, setSatisfaction] = useState(true);
-  const openDropdown = ()=>{
-    setDropDown(prev => !prev)
-  }
-  const openSatisfaction = ()=>{
-    setSatisfaction(prev => !prev)
-  }
+  const [dropDown, setDropDown] = useState(false);
+  const [satisfaction, setSatisfaction] = useState(false);
+  const [classificationDrop, setClassificationDrop] = useState(false);
+
+  const [feedback, setFeedback] = useState("");
+  const [email, setEmail] = useState("");
+  const [satisfactionLevel, setSatisfactionLevel] = useState("");
+  const [feedbackConsole, setFeedbackConsole] = useState(false);
+  const [location, setLocation] = useState("");
+  const [classifications, setClassifications] = useState("");
+  const [feedbackType, setFeedbackType] = useState("Web Feedback"); // Default collection
+
+  const locations = ["Phinmahall", "Merlo", "Dent", "Marketing", "Library"];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addDoc(collection(db, feedbackType), {
+        email,
+        feedback,
+        satisfactionLevel,
+        location: feedbackType === "Locations Feedback" ? location : null,
+        webId: Date.now(),
+        classifications,
+      });
+
+      setFeedbackConsole(true);
+      setTimeout(() => setFeedbackConsole(false), 3000);
+
+      // Reset fields
+      setEmail("");
+      setFeedback("");
+      setSatisfactionLevel("");
+      setLocation("");
+      setClassifications(""); // Reset classification
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  };
+
   return (
     <motion.div
-    initial={{y:10, opacity:0}}
-    whileInView={{y:0, opacity:1}}
-    viewport={{once:true}}
-    transition={{duration:0.5, delay:0.2, ease:easeIn}}
+      initial={{ y: 10, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.2, ease: "easeIn" }}
     >
-  <section className='h-screen min-h-screen w-screen mt-14 lg:mt-0 flex flex-col justify-center '>
-    <section className="  mx-10 items-center text-white">
-      <div className="justify-start items-center w-full">
-        <label className="font-bold text-5xl">Send a Feedback</label>
-        <form className="feedback-form">
-          <div className='flex-col lg:flex-row  flex gap-5'>
-          <button type="button" className={isDropDownEnabled? "disabled":"button-feedback"} onClick={()=>setIsDropdownEnabled(false) } >Website</button>
-          <button type="button" className={isDropDownEnabled? "button-feedback" : "disabled"} onClick={()=>setIsDropdownEnabled(true)} >Campus</button>
-        <div className='inline-flex flex-row gap-3'>
-          <span>
-            <button 
-            onClick={openDropdown}
-            type="button" 
-            id="dropdown" 
-            className={isDropDownEnabled? "button-feedback flex items-center duration-300": " disabled flex items-center duration-300"} 
-            disabled={!isDropDownEnabled} >
-              Location
-              <img src={DropDown} alt="dropdown" className='w-8' />
-            </button>
-            {dropDown || isDropDownEnabled && (
-            
-            <div className='absolute  my-2 max-w-36 min-w-32 h-36 overflow-auto break-words flex flex-col bg-bg-gray-v2 shadow-xl p-2 rounded-lg'>
-              <ul className='dropdown-choice'>
-                <li>Phinmahall</li>
-                <li>Merlo</li>
-                <li>Dent</li>
-                <li>Marketing</li>
-                <li>i miss you</li>
-              </ul>
-            </div>
-            )}
-            </span>
-            <span>
-            <button 
-            onClick={openSatisfaction}
-            type="button" 
-            id="dropdown" 
-            className={isDropDownEnabled? "button-feedback flex items-center duration-300": " disabled flex items-center duration-300"} 
-            disabled={!isDropDownEnabled} >
-              Satisfaction
-              <img src={DropDown} alt="dropdown" className='w-8' />
-            </button>
-            {satisfaction || isDropDownEnabled && (
-            <div className='absolute  my-2 w-36 h-36 overflow-auto break-words flex flex-col bg-bg-gray-v2 shadow-xl p-2 rounded-lg'>
-              <ul className='dropdown-choice'>
-                <li>Very Satisfied</li>
-                <li>Satisfied</li>
-                <li>Neutral</li>
-                <li>Dissatisfied</li>
-                <li>Very Dissatisfied</li>
-              </ul>
-            </div>
-            )}
-            </span>
-            </div>
+      <section className="h-screen min-h-screen w-screen mt-14 lg:mt-0 flex flex-col justify-center">
+        <section className="mx-10 items-center text-white">
+          <div className="justify-start items-center w-full">
+            <label className="font-bold text-5xl">Send a Feedback</label>
+            <form className="feedback-form" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-2 lg:flex-row lg:flex gap-5">
+                {/* Feedback Type Selection */}
+                <button
+                  type="button"
+                  className={feedbackType === "Web Feedback" ? "button-feedback" : "disabled"}
+                  onClick={() => setFeedbackType("Web Feedback")}
+                >
+                  Website
+                </button>
+                <button
+                  type="button"
+                  className={feedbackType === "Locations Feedback" ? "button-feedback" : "disabled"}
+                  onClick={() => setFeedbackType("Locations Feedback")}
+                >
+                  Campus
+                </button>
+
+                {/* Location Dropdown */}
+                {feedbackType === "Locations Feedback" && (
+                  <div className="relative z-bring-front">
+                    <button
+                      onClick={() => setDropDown(!dropDown)}
+                      type="button"
+                      className="button-feedback flex items-center duration-300"
+                    >
+                      {location || "Location"}
+                      <img src={DropDown} alt="dropdown" className="w-8" />
+                    </button>
+                    {dropDown && (
+                      <div
+                        className="absolute my-2 max-w-36 min-w-32 h-36 overflow-auto flex flex-col bg-bg-gray-v2 shadow-xl p-2 rounded-lg"
+                        tabIndex="0"
+                        onBlur={() => setDropDown(false)}
+                      >
+                        <ul className="dropdown-choice">
+                          {locations.map((loc) => (
+                            <li key={loc} onClick={() => { setLocation(loc); setDropDown(false); }}>
+                              {loc}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Satisfaction Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setSatisfaction(!satisfaction)}
+                    type="button"
+                    className="button-feedback flex items-center duration-300"
+                  >
+                    {satisfactionLevel || "Satisfaction"}
+                    <img src={DropDown} alt="dropdown" className="w-8" />
+                  </button>
+                  {satisfaction && (
+                    <div
+                      className="absolute my-2 w-36 h-36 overflow-auto flex flex-col bg-bg-gray-v2 shadow-xl p-2 rounded-lg"
+                      tabIndex="0"
+                      onBlur={() => setSatisfaction(false)}
+                    >
+                      <ul className="dropdown-choice">
+                        {["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"].map((level) => (
+                          <li key={level} onClick={() => { setSatisfactionLevel(level); setSatisfaction(false); }}>
+                            {level}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Classification Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setClassificationDrop(!classificationDrop)}
+                    type="button"
+                    className="button-feedback flex items-center duration-300"
+                  >
+                    {classifications || "Classification"}
+                    <img src={DropDown} alt="dropdown" className="w-8" />
+                  </button>
+                  {classificationDrop && (
+                    <div
+                      className="absolute my-2 w-36 h-36 overflow-auto flex flex-col bg-bg-gray-v2 shadow-xl p-2 rounded-lg"
+                      tabIndex="0"
+                      onBlur={() => setClassificationDrop(false)}
+                    >
+                      <ul className="dropdown-choice">
+                        {["Student", "Guest", "Employee"].map((type) => (
+                          <li key={type} onClick={() => { setClassifications(type); setClassificationDrop(false); }}>
+                            {type}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Email Input */}
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+
+              {/* Feedback Input */}
+              <textarea
+                placeholder="Feedback"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                required
+              />
+
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <button type="submit" className="button-feedback">
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
-          <input type='email' name='email' placeholder='Email' required />
-          <textarea placeholder='Feedback' required/>
-          <div className='flex justify-end'>
-          <button type='submit' className="button-feedback">Submit</button>
-          </div>
-        </form>
-      </div>
-    </section> 
-    </section>
+        </section>
+
+        {/* Success Message */}
+        <section className="feedback-console-layout">
+          {feedbackConsole && (
+            <motion.div
+              initial={{ x: 10, opacity: 0 }}
+              animate={{ x: feedbackConsole ? 0 : 10, opacity: feedbackConsole ? 1 : 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="feedback-console-container">
+                <img src={SuccessIcon} alt="" className="size-10" />
+                <h1>Feedback Submitted!</h1>
+              </div>
+            </motion.div>
+          )}
+        </section>
+      </section>
     </motion.div>
-  )
+  );
 }
 
-export default ClientFeedback
+export default ClientFeedback;

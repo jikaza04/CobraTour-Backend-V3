@@ -1203,3 +1203,37 @@ input[type="search"]::-webkit-search-cancel-button {
     }
   }
 }
+@layer components{
+  .feedback-console-container{
+    @apply
+    flex
+    flex-row
+    justify-center
+    items-center
+    lg:bg-transparent
+  lg:text-white
+    bg-white
+    text-black
+    p-5
+    rounded-lg
+    border-2
+    outline-none
+    border-green-600
+    gap-5
+    ;
+  }
+}
+@layer components{
+  .feedback-console-layout{
+    @apply
+    flex
+    lg:justify-start
+    lg:items-start
+    justify-center
+    items-center
+    absolute
+    right-5
+    top-32
+    ;
+  }
+}
