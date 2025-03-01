@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DropDown from "./Images/dropdown.svg";
 import SuccessIcon from "./Icons/success.svg";
 import { motion } from "framer-motion";
 import { db } from "../config/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 
 function ClientFeedback() {
   const [dropDown, setDropDown] = useState(false);
   const [satisfaction, setSatisfaction] = useState(false);
   const [classificationDrop, setClassificationDrop] = useState(false);
-
+  const [locationsList, setLocationsList] = useState([]);
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
   const [satisfactionLevel, setSatisfactionLevel] = useState("");
@@ -17,8 +17,6 @@ function ClientFeedback() {
   const [location, setLocation] = useState("");
   const [classifications, setClassifications] = useState("");
   const [feedbackType, setFeedbackType] = useState("Web Feedback"); // Default collection
-
-  const locations = ["Phinmahall", "Merlo", "Dent", "Marketing", "Library"];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,6 +45,26 @@ function ClientFeedback() {
     }
   };
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const displayLocation = collection(db, "Content");
+        const snapshot = await getDocs(displayLocation);
+
+        const locationsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setLocationsList(locationsData);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
   return (
     <motion.div
       initial={{ y: 10, opacity: 0 }}
@@ -63,14 +81,22 @@ function ClientFeedback() {
                 {/* Feedback Type Selection */}
                 <button
                   type="button"
-                  className={feedbackType === "Web Feedback" ? "button-feedback" : "disabled"}
+                  className={
+                    feedbackType === "Web Feedback"
+                      ? "button-feedback"
+                      : "disabled"
+                  }
                   onClick={() => setFeedbackType("Web Feedback")}
                 >
                   Website
                 </button>
                 <button
                   type="button"
-                  className={feedbackType === "Locations Feedback" ? "button-feedback" : "disabled"}
+                  className={
+                    feedbackType === "Locations Feedback"
+                      ? "button-feedback"
+                      : "disabled"
+                  }
                   onClick={() => setFeedbackType("Locations Feedback")}
                 >
                   Campus
@@ -78,7 +104,7 @@ function ClientFeedback() {
 
                 {/* Location Dropdown */}
                 {feedbackType === "Locations Feedback" && (
-                  <div className="relative z-bring-front">
+                  <div className="relative z-10">
                     <button
                       onClick={() => setDropDown(!dropDown)}
                       type="button"
@@ -94,9 +120,15 @@ function ClientFeedback() {
                         onBlur={() => setDropDown(false)}
                       >
                         <ul className="dropdown-choice">
-                          {locations.map((loc) => (
-                            <li key={loc} onClick={() => { setLocation(loc); setDropDown(false); }}>
-                              {loc}
+                          {locationsList.map((loc) => (
+                            <li
+                              key={loc.id}
+                              onClick={() => {
+                                setLocation(loc.Name); // Access the name of the location
+                                setDropDown(false);
+                              }}
+                            >
+                              {loc.Name}
                             </li>
                           ))}
                         </ul>
@@ -122,8 +154,20 @@ function ClientFeedback() {
                       onBlur={() => setSatisfaction(false)}
                     >
                       <ul className="dropdown-choice">
-                        {["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"].map((level) => (
-                          <li key={level} onClick={() => { setSatisfactionLevel(level); setSatisfaction(false); }}>
+                        {[
+                          "Very Satisfied",
+                          "Satisfied",
+                          "Neutral",
+                          "Dissatisfied",
+                          "Very Dissatisfied",
+                        ].map((level) => (
+                          <li
+                            key={level}
+                            onClick={() => {
+                              setSatisfactionLevel(level);
+                              setSatisfaction(false);
+                            }}
+                          >
                             {level}
                           </li>
                         ))}
@@ -131,7 +175,6 @@ function ClientFeedback() {
                     </div>
                   )}
                 </div>
-
                 {/* Classification Dropdown */}
                 <div className="relative">
                   <button
@@ -150,7 +193,13 @@ function ClientFeedback() {
                     >
                       <ul className="dropdown-choice">
                         {["Student", "Guest", "Employee"].map((type) => (
-                          <li key={type} onClick={() => { setClassifications(type); setClassificationDrop(false); }}>
+                          <li
+                            key={type}
+                            onClick={() => {
+                              setClassifications(type);
+                              setClassificationDrop(false);
+                            }}
+                          >
                             {type}
                           </li>
                         ))}
@@ -193,7 +242,10 @@ function ClientFeedback() {
           {feedbackConsole && (
             <motion.div
               initial={{ x: 10, opacity: 0 }}
-              animate={{ x: feedbackConsole ? 0 : 10, opacity: feedbackConsole ? 1 : 0 }}
+              animate={{
+                x: feedbackConsole ? 0 : 10,
+                opacity: feedbackConsole ? 1 : 0,
+              }}
               transition={{ duration: 0.5 }}
             >
               <div className="feedback-console-container">

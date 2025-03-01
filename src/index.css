@@ -732,6 +732,7 @@ input[type="search"]::-webkit-search-cancel-button {
     .gallery-section{
       @apply
       grid-cols-3
+      grid-rows-3
       w-full
       gap-5
       
@@ -753,7 +754,7 @@ input[type="search"]::-webkit-search-cancel-button {
     flex
     flex-col
     justify-center
-    bg-transparent
+    bg-bg-gray-v2
     border-white
     border
     p-2
@@ -761,6 +762,7 @@ input[type="search"]::-webkit-search-cancel-button {
     my-5
     lg:my-0
     duration-300
+    
     ;
   }
   @screen lg{
@@ -775,7 +777,7 @@ input[type="search"]::-webkit-search-cancel-button {
 @layer components{
   .modal-gallery-container{
     @apply
-    flex
+    inline-flex
     flex-col
     gap-5
     items-stretch
@@ -803,7 +805,6 @@ input[type="search"]::-webkit-search-cancel-button {
     flex 
     flex-col 
     justify-start
-    size-full
     border 
     border-white 
     p-2
@@ -813,7 +814,6 @@ input[type="search"]::-webkit-search-cancel-button {
     break-words
     text-justify
     mx-5
-    w-fit 
     ;
   }
 }
@@ -1234,6 +1234,38 @@ input[type="search"]::-webkit-search-cancel-button {
     absolute
     right-5
     top-32
+    ;
+  }
+}
+@layer components{
+  .client-design{
+    @apply
+    absolute
+    -z-50
+    left-0
+    bg-maroon-custom 
+    p-10
+    blur-extreme
+    size-56
+    overflow-hidden
+    ;
+  }
+}
+@layer components{
+  .client-design2{
+    @apply
+    absolute
+    right-0
+    hidden
+    lg:block
+    bg-maroon-custom 
+    p-10
+    blur-extreme
+    size-56
+    
+    justify-end
+    overflow-hidden
+    
     ;
   }
 }
