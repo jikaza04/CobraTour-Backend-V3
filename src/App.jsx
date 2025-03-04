@@ -16,6 +16,7 @@ import ControlNavBar from './ControlAdmin/ControlNavbar';
 import ControlDashboard from './ControlAdmin/ControlDashboard';
 import ControlAccount from './ControlAdmin/ControlAccount';
 import ControlLogin from './ControlAdmin/ControlLogin';
+import CoryAI from './Client/Cory'
 
 function App() {
   const location = useLocation();
@@ -57,6 +58,7 @@ function App() {
             <Route path="/clientFeedback" element={<ClientFeedback />} />
             <Route path="/clientFaqs" element={<ClientFaqs />} />
             <Route path="/clientExplore" element={<ClientExplore />} />
+            <Route path="/cory" element={<CoryAI/>}/>
 
             {/* Admin Routes */}
             <Route path="/adminDashboard" element={<AdminDashboard />} />

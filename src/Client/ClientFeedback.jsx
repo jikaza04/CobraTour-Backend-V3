@@ -77,7 +77,8 @@ function ClientFeedback() {
           <div className="justify-start items-center w-full">
             <label className="font-bold text-5xl">Send a Feedback</label>
             <form className="feedback-form" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 lg:flex-row lg:flex gap-5">
+              <div className="grid grid-cols-2 grid-rows-2 text-sm lg:text-base lg:flex-row lg:flex gap-5">
+
                 {/* Feedback Type Selection */}
                 <button
                   type="button"
@@ -104,11 +105,15 @@ function ClientFeedback() {
 
                 {/* Location Dropdown */}
                 {feedbackType === "Locations Feedback" && (
-                  <div className="relative z-10">
+                  <motion.div 
+                  initial={{opacity:0}}
+                  animate={{opacity:setDropDown? 1:0}}
+                  transition={{duration:0.35, delay:0.2}}
+                  className="relative z-10">
                     <button
                       onClick={() => setDropDown(!dropDown)}
                       type="button"
-                      className="button-feedback flex items-center duration-300"
+                      className="button-feedback"
                     >
                       {location || "Location"}
                       <img src={DropDown} alt="dropdown" className="w-8" />
@@ -134,7 +139,7 @@ function ClientFeedback() {
                         </ul>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Satisfaction Dropdown */}

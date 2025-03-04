@@ -8,11 +8,13 @@ import SocialFacebook from './Icons/fb.svg'
 import SocialInstagram from './Icons/ig.svg'
 import SocialWebsite from './Icons/web.svg'
 import { useState } from 'react'
+import CoryAI from './Cory'
 function ClientHome() {
   const [faq, setfaq] = useState(false)
   const openFaq = ()=>{
     setfaq(prev =>!prev);
    };
+   
   return (
     <motion.div
     initial={{y:10, opacity:0}}
@@ -21,8 +23,10 @@ function ClientHome() {
     transition={{duration:0.5, delay:0.2, ease:easeIn}}
     >
     <section className='min-h-screen overflow-hidden  w-full text-white '>
+      <div>
+        <CoryAI/>
+      </div>
       <section className=' home-section-layout'>
-      
         <div className='flex flex-col gap-y-5  mx-10 lg:text-left lg:text-sm/8'>
           <span className='mt-40 lg:mt-0'>
           <h1 className='home-head-text'>Explore Southwestern University<br/> PHINMA Main Campus </h1>
@@ -129,6 +133,7 @@ function ClientHome() {
         </span>
         </div>
       </footer>
+      
     </section>
     </motion.div>
     
