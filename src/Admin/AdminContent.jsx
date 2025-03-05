@@ -228,15 +228,15 @@ function AdminContent() {
         <>
             {/* Header Section with Search Bar */}
             <section className="m-5 inter">
-                <div className="flex gap-5 items-center ">
+                <div className="flex flex-col lg:flex-row gap-5 items-start ">
                     <label className="text-4xl font-semibold">Contents</label>
-                    <span className="flex items-center relative search-bar">
+                    <span className="search-bar">
                         <img src={SearchIcon} alt="Search Icon" className="w-8" />
                         <input
                             type="search"
                             name="SearchBar"
                             placeholder="Search"
-                            className='bg-transparent outline-none'
+                            className='bg-transparent w-full outline-none'
                             value={searchQuery}
                             onChange={handleSearchChange}
                         />

@@ -101,7 +101,7 @@ const BarChart = () => {
     }, [satisfactionCounts]);  // Re-run chart creation when satisfactionCounts changes
 
     return (
-        <div className='h-96 max-w-full min-w-96    lg:w-500 lg:h-400'>
+        <div className='h-96 w-full lg:w-500 lg:h-400'>
             <canvas ref={chartRef}></canvas>
         </div>
     );
