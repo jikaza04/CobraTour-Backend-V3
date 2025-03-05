@@ -1,16 +1,13 @@
-import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./config/firebase";
 
-const PrivateRoute = ({ element, ...rest }) => {
-  const { isAuthenticated } = useAuth();
+const ProtectedRoute = () => {
+    const [user, loading] = useAuthState(auth);
 
-  return (
-    <Route
-      {...rest}
-      element={isAuthenticated ? element : <Navigate to="/adminLogin" />}
-    />
-  );
+    if (loading) return <p>Loading...</p>; // Show loading while checking auth
+
+    return user ? <Outlet /> : <Navigate to="/adminLogin" replace />;
 };
 
-export default PrivateRoute;
+export default ProtectedRoute;

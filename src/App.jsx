@@ -16,7 +16,8 @@ import ControlNavBar from './ControlAdmin/ControlNavbar';
 import ControlDashboard from './ControlAdmin/ControlDashboard';
 import ControlAccount from './ControlAdmin/ControlAccount';
 import ControlLogin from './ControlAdmin/ControlLogin';
-import CoryAI from './Client/Cory'
+import CoryAI from './Client/Cory';
+import ProtectedRoute from './PrivateRoute';
 
 function App() {
   const location = useLocation();
@@ -25,7 +26,6 @@ function App() {
   const isAdminPage = location.pathname.startsWith('/admin') && !isLoginPage;
   const isControlAdmin = location.pathname.startsWith('/control');
 
- 
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 1023);
 
   useEffect(() => {
@@ -45,7 +45,17 @@ function App() {
         {isAdminPage && <AdminNavBar />}
 
         <section
-          className={isLoginPage ? 'w-full' : isControlAdmin ? 'w-4/5' :isAdminPage? "lg:w-4/5 w-full" : isClientPage ? 'w-full' : 'w-4/5'}
+          className={
+            isLoginPage
+              ? 'w-full'
+              : isControlAdmin
+              ? 'w-4/5'
+              : isAdminPage
+              ? 'lg:w-4/5 w-full'
+              : isClientPage
+              ? 'w-full'
+              : 'w-4/5'
+          }
           style={{ width: isMobileView && isControlAdmin ? '100vw' : '' }}
         >
           <Routes>
@@ -58,13 +68,17 @@ function App() {
             <Route path="/clientFeedback" element={<ClientFeedback />} />
             <Route path="/clientFaqs" element={<ClientFaqs />} />
             <Route path="/clientExplore" element={<ClientExplore />} />
-            <Route path="/cory" element={<CoryAI/>}/>
+            <Route path="/cory" element={<CoryAI />} />
 
-            {/* Admin Routes */}
-            <Route path="/adminDashboard" element={<AdminDashboard />} />
-            <Route path="/adminContent" element={<AdminContent />} />
-            <Route path="/adminAccount" element={<AdminAccount />} />
+            {/* Admin Login (NOT Protected) */}
             <Route path="/adminLogin" element={<AdminLogin />} />
+
+            {/* Admin Routes (Protected) */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/adminDashboard" element={<AdminDashboard />} />
+              <Route path="/adminContent" element={<AdminContent />} />
+              <Route path="/adminAccount" element={<AdminAccount />} />
+            </Route>
 
             {/* Control Admin Routes */}
             <Route path="/controlDashboard" element={<ControlDashboard />} />

@@ -33,7 +33,7 @@ function ControlAccount() {
         
     </section>
     <section className='account-container'>
-      <div className='flex justify-between items-center my-3'>
+      <div className='flex flex-col lg:flex-row  lg:justify-between items-start lg:items-center my-3'>
         <span className='block'>
           <h1 className='account-label'>Username:</h1>
           <label className='text-maroon-custom'>Sample Username</label>
@@ -42,7 +42,7 @@ function ControlAccount() {
             <label className='text-maroon-custom'>Change Username:</label>
             <input type="text" name="newUserName" placeholder='New Username' className='modal-input'/>
             <span className='flex flex-row gap-2 items-center justify-end my-2'>
-              <button type='button'  onClick={closeNewUsername} className='account-cancel'>Cancel</button>
+              <button  onClick={closeNewUsername} className='account-cancel'>Cancel</button>
               <input type='submit' name='newusername' className='account-submit'></input>
             </span>
           </form>
@@ -50,7 +50,7 @@ function ControlAccount() {
         </span>
           <button onClick={openNewuserName} className='button-dashboard '>Edit Username</button>
         </div>
-          <div className='flex justify-between items-center my-3'>
+          <div className='flex flex-col lg:flex-row  lg:justify-between items-start lg:items-center my-3'>
             <span className='block'>
             <h1 className='account-label'>Password:</h1>
             <label className='text-maroon-custom'>*******</label>
@@ -59,13 +59,13 @@ function ControlAccount() {
             <label className='text-maroon-custom'>Change Password:</label>
             <input type="password" name="newPassword" placeholder='New Password' className='modal-input'/>
             <span className='flex flex-row gap-2 items-center justify-end my-2'>
-              <button type='button' onClick={closeNewPassword} className='account-cancel'>Cancel</button>
+              <button type='reset' onClick={closeNewPassword} className='account-cancel'>Cancel</button>
               <input type='submit' name='newusername' className='account-submit'></input>
             </span>
           </form>
           )}
         </span>
-            <button onClick={openNewPassword} className='button-dashboard '>Edit Password</button>
+            <button onClick={openNewPassword} className='button-dashboard'>Edit Password</button>
       </div>
     </section>
     </section>

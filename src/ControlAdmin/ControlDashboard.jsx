@@ -102,7 +102,7 @@ function ControlDashboard() {
         </div>
       </div>
       {/* History List Ni Aejay*/}
-      <div className='control-contents h-72' onClick={openHistoryModal}>
+      <div className='control-contents h-72' >
       <div className='flex justify-center text-center'>
           <label className='text-xl font-bold mt-5'>History</label>
         </div>
@@ -110,7 +110,7 @@ function ControlDashboard() {
         <img src={SearchIcon} alt="search" className='w-9' />
         <input type='search' name='search-admin-history' placeholder='search' />
         </form>
-        <div className='control-account-list justify-between'>
+        <div className='control-account-list justify-between'onClick={openHistoryModal}>
           <div className='flex items-center gap-x-5'>
           <img src={HistoryIcon} alt="" />
           <label>Sample Email</label>
