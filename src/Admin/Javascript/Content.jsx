@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { db } from '../config/firebase';
-import { collection, addDoc, onSnapshot, deleteDoc, doc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
+import { useState } from 'react';  // Importing useState hook to manage component state
 
+// Importing icons and images used in the component
 import SearchIcon from './AdminIcons/search.svg';
 import AddIcon from './AdminIcons/AdminAdd.svg';
 import DeleteAll from './AdminIcons/AdminDelete.svg';
@@ -10,233 +8,143 @@ import ContentEditIcon from './AdminIcons/ContentEdit.svg';
 import AdminContentInsert from './AdminIcons/AdminContentInsert.svg';
 import AdminWarning from './AdminIcons/alarm3.png';
 
-
 function AdminContent() {
-    const [editModal, setEditModal] = useState(false);
-    const [addModal, setAddModal] = useState(false);
-    const [deleteModal, setDeleteModal] = useState(false);
-    const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
-    const [contentToDelete, setContentToDelete] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
+    // State variables for managing modals
+    const [editModal, setEditModal] = useState(false);  // Controls visibility of the edit modal
+    const [addModal, setAddModal] = useState(false);    // Controls visibility of the add modal
+    const [deleteModal, setDeleteModal] = useState(false);  // Controls visibility of the delete confirmation modal
+    const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);  // Controls visibility of the delete confirmation modal for specific content
+    const [contentToDelete, setContentToDelete] = useState(null);  // Tracks the content to be deleted
+    const [searchQuery, setSearchQuery] = useState('');  // Tracks the search query
 
-    const [contentList, setContentList] = useState([]);
-    const [newContent, setNewContent] = useState({ name: '', location: '', description: '', image: '' });
-    const [editContent, setEditContent] = useState({ id: null, name: '', location: '', description: '', image: '' });
+    // State for managing the list of content and the new content being added
+    const [contentList, setContentList] = useState([]);  // Stores the list of content items
+    const [newContent, setNewContent] = useState({ name: '', location: '', description: '', image: '' });  // Tracks new content input
+    const [editContent, setEditContent] = useState({ id: null, name: '', location: '', description: '', image: '' });  // Tracks content being edited
 
-    useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "Content"), (snapshot) => {
-            const contentData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setContentList(contentData);
-        });
-    
-        return () => unsubscribe();
-    }, []);
-
+    // Function to open the edit modal
     const openEditModal = (content) => {
         setEditContent(content);
         setEditModal(true);
     };
 
+    // Function to close the edit modal when clicking outside the modal content
     const closeEditModal = (e) => { 
         if (e.target.id === 'content-modal') setEditModal(false); 
     };
 
+    // Function to open the add modal
     const openAddModal = () => setAddModal(true);
 
+    // Function to close the add modal when clicking outside the modal content
     const closeAddModal = (e) => { 
         if (e.target.id === 'add-modal') setAddModal(false); 
     };
 
+    // Function to open the delete confirmation modal
     const openDeleteModal = () => setDeleteModal(true);
 
+    // Function to close the delete confirmation modal when clicking outside the modal content
     const closeDeleteModal = (e) => { 
         if (e.target.id === 'warning-modal') setDeleteModal(false); 
     };
 
+    // Function to handle changes in input fields for new content
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setNewContent((prev) => ({ ...prev, [name]: value }));
+        setNewContent((prev) => ({ ...prev, [name]: value }));  // Update the corresponding field in the newContent state
     };
 
+    // Function to handle changes in input fields for editing content
     const handleEditInputChange = (e) => {
         const { name, value } = e.target;
-        setEditContent((prev) => ({ ...prev, [name]: value }));
+        setEditContent((prev) => ({ ...prev, [name]: value }));  // Update the corresponding field in the editContent state
     };
 
+    // Function to handle image selection for new content
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0];  // Get the selected file
         if (file) {
             const reader = new FileReader();
-            reader.onload = () => setNewContent((prev) => ({ ...prev, image: reader.result }));
-            reader.readAsDataURL(file);
+            reader.onload = () => setNewContent((prev) => ({ ...prev, image: reader.result }));  // Set the image as a data URL
+            reader.readAsDataURL(file);  // Read the file as a data URL
         }
     };
 
+    // Function to handle image selection for editing content
     const handleEditImageChange = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0];  // Get the selected file
         if (file) {
             const reader = new FileReader();
-            reader.onload = () => setEditContent((prev) => ({ ...prev, image: reader.result }));
-            reader.readAsDataURL(file);
+            reader.onload = () => setEditContent((prev) => ({ ...prev, image: reader.result }));  // Set the image as a data URL
+            reader.readAsDataURL(file);  // Read the file as a data URL
         }
     };
 
-    const uploadImage = async (image) => {
-        const formData = new FormData();
-        formData.append("file", image);
-        formData.append("upload_preset", "content-preset");
-        formData.append("cloud_name", "dz4pb5rg4");
-
-        try {
-            const response = await axios.post("https://api.cloudinary.com/v1_1/dz4pb5rg4/image/upload", formData);
-            return response.data.url;
-        } catch (error) {
-            console.error("Error uploading image:", error);
-            return null;
-        }
-    };
-
-    const handleAddContent = async (e) => {
-        e.preventDefault();
-        console.log('Adding content:', newContent);
-    
-        if (newContent.name && newContent.location && newContent.description && newContent.image) {
-            const imageUrl = await uploadImage(newContent.image);
-            console.log('Image URL:', imageUrl);
-    
-            if (imageUrl) {
-                const newContentData = { ...newContent, image: imageUrl };
-                
-                try {
-                    const docRef = await addDoc(collection(db, "Content"), {
-                        Name: newContentData.name,
-                        Location: newContentData.location,
-                        Description: newContentData.description,
-                        Image: newContentData.image,
-                    });
-                    newContentData.id = docRef.id; // Assign the Firestore document ID to the content
-                    setContentList((prev) => [...prev, newContentData]);
-                    console.log('New content list:', contentList);
-                    setNewContent({ name: '', location: '', description: '', image: '' });
-                    setAddModal(false);
-                } catch (error) {
-                    console.error("Error adding document to Firestore:", error);
-                    alert('Failed to add content to Firestore. Please try again.');
-                }
-            } else {
-                alert('Failed to upload image. Please try again.');
-            }
-        } else {
-            alert('Please fill out all fields and upload an image.');
-        }
-    };
-
-    const handleEditContent = async (e) => {
+    // Function to add new content to the content list
+    const handleAddContent = (e) => {
         e.preventDefault();  // Prevent the default form submission behavior
-    
-        // Check if the image has been changed and needs to be uploaded
-        const imageUrl = editContent.image.startsWith('data:') ? await uploadImage(editContent.image) : editContent.image;
-    
-        if (imageUrl) {
-            const updatedContentData = { ...editContent, image: imageUrl };
-    
-            try {
-                // Update the Firestore document with the new details
-                await updateDoc(doc(db, "Content", editContent.id), {
-                    Name: updatedContentData.name,
-                    Location: updatedContentData.location,
-                    Description: updatedContentData.description,
-                    Image: updatedContentData.image,
-                });
-    
-                // Update the local state with the new content details
-                setContentList((prev) =>
-                    prev.map((content) =>
-                        content.id === editContent.id ? updatedContentData : content
-                    )
-                );
-    
-                console.log('Content updated successfully.');
-                setEditModal(false);  // Close the edit modal
-            } catch (error) {
-                console.error("Error updating document in Firestore:", error);
-                alert('Failed to update content in Firestore. Please try again.');
-            }
+        if (newContent.name && newContent.location && newContent.description && newContent.image) {
+            // Add the new content to the list with a unique ID
+            setContentList((prev) => [...prev, { ...newContent, id: Date.now() }]);
+            // Reset the newContent state
+            setNewContent({ name: '', location: '', description: '', image: '' });
+            setAddModal(false);  // Close the add modal
         } else {
-            alert('Failed to upload image. Please try again.');
+            alert('Please fill out all fields and upload an image.');  // Show an alert if any field is missing
         }
     };
 
+    // Function to save the edited content
+    const handleEditContent = (e) => {
+        e.preventDefault();  // Prevent the default form submission behavior
+        setContentList((prev) =>
+            prev.map((content) =>
+                content.id === editContent.id ? editContent : content
+            )
+        );
+        setEditModal(false);  // Close the edit modal
+    };
+
+    // Function to confirm deletion of specific content
     const confirmDeleteContent = (content) => {
         setContentToDelete(content);
         setConfirmDeleteModal(true);
     };
 
-    const handleDeleteContent = async () => {
-        if (contentToDelete) {
-            try {
-                await deleteDoc(doc(db, "Content", contentToDelete.id));
-                setContentList((prev) => prev.filter((content) => content.id !== contentToDelete.id));
-                setConfirmDeleteModal(false);
-                setEditModal(false);
-            } catch (error) {
-                console.error("Error deleting document from Firestore:", error);
-                alert('Failed to delete content from Firestore. Please try again.');
-            }
-        }
+    // Function to delete the specific content
+    const handleDeleteContent = () => {
+        setContentList((prev) => prev.filter((content) => content.id !== contentToDelete.id));
+        setConfirmDeleteModal(false);  // Close the confirm delete modal
+        setEditModal(false);  // Close the edit modal if open
     };
 
-    const handleDeleteAllContent = async (e) => {
-        e.preventDefault();
-        try {
-            const contentCollection = collection(db, "Content");
-            const snapshot = await getDocs(contentCollection);
-            const batch = writeBatch(db);
-
-            if (snapshot.empty) {
-                console.log("No documents found in the collection.");
-                alert('No content to delete.');
-                return;
-            }
-
-            snapshot.forEach((doc) => {
-                console.log(`Deleting document with ID: ${doc.id}`);
-                batch.delete(doc.ref);
-            });
-
-            await batch.commit();
-            console.log('All documents deleted successfully.');
-            setContentList([]);
-            setDeleteModal(false);
-        } catch (error) {
-            console.error("Error deleting all documents from Firestore:", error);
-            alert('Failed to delete all content from Firestore. Please try again.');
-        }
-    };
-
+    // Function to reset the input fields for new content
     const handleReset = () => setNewContent({ name: '', location: '', description: '', image: '' });
 
+    // Function to handle search input change
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
     };
 
+    // Filtered content list based on search query
     const filteredContentList = contentList.filter((content) =>
-        content.Name && content.Name.toLowerCase().includes(searchQuery.toLowerCase())
+        content.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
         <>
             {/* Header Section with Search Bar */}
             <section className="m-5 inter">
-                <div className="flex gap-5 items-center ">
+                <div className="flex gap-5 items-center">
                     <label className="text-4xl font-semibold">Contents</label>
-                    <span className="flex items-center relative search-bar">
-                        <img src={SearchIcon} alt="Search Icon" className="w-8" />
+                    <span className="flex items-center relative">
+                        <img src={SearchIcon} alt="Search Icon" className="w-8 absolute left-1" />
                         <input
                             type="search"
                             name="SearchBar"
                             placeholder="Search"
-                            className='bg-transparent outline-none'
+                            className="search-bar"
                             value={searchQuery}
                             onChange={handleSearchChange}
                         />
@@ -256,11 +164,11 @@ function AdminContent() {
                 </section>
 
                 {/* List of Content Items */}
-                <section className="grid lg:grid-cols-3 gap-5">
+                <section className="grid grid-cols-3 gap-5">
                     {filteredContentList.map((content) => (
                         <div key={content.id} className="admin-content-container">
-                            <img src={content.Image} alt={content.Name} className="Content-img" />
-                            <label className="font-medium text-xl">{content.Name}</label>
+                            <img src={content.image} alt={content.name} className="Content-img" />
+                            <label className="font-medium text-xl">{content.name}</label>
                             <span className="flex justify-end items-center gap-2">
                                 <button onClick={() => openEditModal(content)}>
                                     <img src={ContentEditIcon} alt="Edit Icon" className="content-icon" />
@@ -277,8 +185,8 @@ function AdminContent() {
                             <span className="flex flex-col items-center">
                                 <img src={AdminWarning} alt="Warning" className="w-36" />
                                 <h1 className="font-bold text-2xl">WARNING!</h1>
-                                <label className='text-xs lg:text-base'>ARE YOU SURE TO CONTINUE THIS ACTION?</label>
-                                <form onSubmit={handleDeleteAllContent}>
+                                <label>ARE YOU SURE TO CONTINUE THIS ACTION?</label>
+                                <form>
                                     <input type="submit" value="Continue" name="deleteAll" className="input-submit w-72" />
                                 </form>
                             </span>
@@ -289,14 +197,14 @@ function AdminContent() {
                 {/* Add Content Modal */}
                 {addModal && (
                     <section id="add-modal" className="modal-section" onClick={closeAddModal}>
-                        <div className="modal-content w-full h-v-modal mx-4 lg:size-3/5" onClick={(e) => e.stopPropagation()}>
-                            <span className="flex flex-col overflow-hidden w-full lg:size-full justify-center items-center border-dashed border-2 m-1 rounded-3xl border-maroon-custom">
+                        <div className="modal-content size-3/5" onClick={(e) => e.stopPropagation()}>
+                            <span className="flex flex-col w-full justify-center items-center border-dashed border-2 m-1 rounded-3xl border-maroon-custom">
                                 {newContent.image ? (
-                                    <img src={newContent.image} className="h-50" alt="Selected" style={{ objectFit: 'fit' }} />
+                                    <img src={newContent.image} className="h-50" alt="Selected" style={{ objectFit: 'cover' }} />
                                 ) : (
                                     <img src={AdminContentInsert} className="h-50 w-32 object-cover rounded-lg" alt="Content" style={{ objectFit: 'cover' }} />
                                 )}
-                                <label htmlFor="file-input" className="modal-add-button cursor-pointer absolute">Add Image</label>
+                                <label htmlFor="file-input" className="modal-add-button cursor-pointer">Add Image</label>
                                 <input id="file-input" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                             </span>
                             <form className="flex flex-col gap-1 p-2 size-full" onSubmit={handleAddContent}>

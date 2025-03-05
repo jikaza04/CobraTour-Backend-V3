@@ -1,23 +1,69 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import { collection, query, onSnapshot } from 'firebase/firestore';
+import { db } from '/Users/DELL/Desktop/CobtraTour Web/CobraTour-V2/src/config/firebase';  // Adjust path if needed
 
 // Register Chart.js components
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const BarChart = () => {
-    const chartRef = useRef(null); // Reference to the canvas element
-    const chartInstance = useRef(null); // Reference to the chart instance
+    const chartRef = useRef(null);  // Canvas reference
+    const chartInstance = useRef(null);  // Chart instance reference
+    const [satisfactionCounts, setSatisfactionCounts] = useState({
+        "Very Satisfied": 0,
+        "Satisfied": 0,
+        "Neutral": 0,
+        "Not Satisfied": 0,
+        "Not Very Satisfied": 0,
+    });
 
     useEffect(() => {
-        // Chart configuration
+        // Fetch data from both "Locations Feedback" and "Web Feedback"
+        const fetchData = async () => {
+            const counts = {
+                "Very Satisfied": 0,
+                "Satisfied": 0,
+                "Neutral": 0,
+                "Not Satisfied": 0,
+                "Not Very Satisfied": 0,
+            };
+
+            const feedbackCollections = ["Locations Feedback", "Web Feedback"];
+            feedbackCollections.forEach((collectionName) => {
+                const q = query(collection(db, collectionName));
+                onSnapshot(q, (snapshot) => {
+                    snapshot.docs.forEach((doc) => {
+                        const feedback = doc.data();
+                        if (counts[feedback.satisfactionLevel] !== undefined) {
+                            counts[feedback.satisfactionLevel]++;
+                        }
+                    });
+
+                    // Update state with the latest counts
+                    setSatisfactionCounts({ ...counts });
+                });
+            });
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        // Prepare chart configuration
         const config = {
             type: 'bar',
             data: {
-                labels: ['Very Satisfied', 'Satisfied', 'Neutral','Not Satisfied','Not Very Satisfied' ],
+                labels: ['Very Satisfied', 'Satisfied', 'Neutral', 'Not Satisfied', 'Not Very Satisfied'],
                 datasets: [
                     {
-                        label: 'Web Satisfaction',
-                        data: [65, 59, 80, 81, 56, 55, 40],
+                        label: 'User Satisfaction',
+                        data: [
+                            satisfactionCounts["Very Satisfied"],
+                            satisfactionCounts["Satisfied"],
+                            satisfactionCounts["Neutral"],
+                            satisfactionCounts["Not Satisfied"],
+                            satisfactionCounts["Not Very Satisfied"]
+                        ],
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1,
@@ -52,7 +98,7 @@ const BarChart = () => {
                 chartInstance.current.destroy();
             }
         };
-    }, []);
+    }, [satisfactionCounts]);  // Re-run chart creation when satisfactionCounts changes
 
     return (
         <div className='h-96 max-w-full min-w-96    lg:w-500 lg:h-400'>

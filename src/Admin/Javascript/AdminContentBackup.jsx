@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { db } from '../config/firebase';
+import { db } from './FirebaseConfig';
 import { collection, addDoc, onSnapshot, deleteDoc, doc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
 
 import SearchIcon from './AdminIcons/search.svg';
@@ -228,15 +228,15 @@ function AdminContent() {
         <>
             {/* Header Section with Search Bar */}
             <section className="m-5 inter">
-                <div className="flex gap-5 items-center ">
+                <div className="flex gap-5 items-center">
                     <label className="text-4xl font-semibold">Contents</label>
-                    <span className="flex items-center relative search-bar">
-                        <img src={SearchIcon} alt="Search Icon" className="w-8" />
+                    <span className="flex items-center relative">
+                        <img src={SearchIcon} alt="Search Icon" className="w-8 absolute left-1" />
                         <input
                             type="search"
                             name="SearchBar"
                             placeholder="Search"
-                            className='bg-transparent outline-none'
+                            className="search-bar"
                             value={searchQuery}
                             onChange={handleSearchChange}
                         />
@@ -256,7 +256,7 @@ function AdminContent() {
                 </section>
 
                 {/* List of Content Items */}
-                <section className="grid lg:grid-cols-3 gap-5">
+                <section className="grid grid-cols-3 gap-5">
                     {filteredContentList.map((content) => (
                         <div key={content.id} className="admin-content-container">
                             <img src={content.Image} alt={content.Name} className="Content-img" />
@@ -277,7 +277,7 @@ function AdminContent() {
                             <span className="flex flex-col items-center">
                                 <img src={AdminWarning} alt="Warning" className="w-36" />
                                 <h1 className="font-bold text-2xl">WARNING!</h1>
-                                <label className='text-xs lg:text-base'>ARE YOU SURE TO CONTINUE THIS ACTION?</label>
+                                <label>ARE YOU SURE TO CONTINUE THIS ACTION?</label>
                                 <form onSubmit={handleDeleteAllContent}>
                                     <input type="submit" value="Continue" name="deleteAll" className="input-submit w-72" />
                                 </form>
@@ -289,8 +289,8 @@ function AdminContent() {
                 {/* Add Content Modal */}
                 {addModal && (
                     <section id="add-modal" className="modal-section" onClick={closeAddModal}>
-                        <div className="modal-content w-full h-v-modal mx-4 lg:size-3/5" onClick={(e) => e.stopPropagation()}>
-                            <span className="flex flex-col overflow-hidden w-full lg:size-full justify-center items-center border-dashed border-2 m-1 rounded-3xl border-maroon-custom">
+                        <div className="modal-content size-3/5" onClick={(e) => e.stopPropagation()}>
+                            <span className="flex flex-col overflow-hidden w-full justify-center items-center border-dashed border-2 m-1 rounded-3xl border-maroon-custom">
                                 {newContent.image ? (
                                     <img src={newContent.image} className="h-50" alt="Selected" style={{ objectFit: 'fit' }} />
                                 ) : (
