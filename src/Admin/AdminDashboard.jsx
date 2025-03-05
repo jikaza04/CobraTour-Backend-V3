@@ -84,7 +84,7 @@ const AdminDashboard = () => {
 
             {/* Locations Feedback Table */}
             {activeTable === "Locations-Feedback" && (
-            <section className="overflow-x-auto lg:overflow-visible">
+            <section className="overflow-x-auto p-5 lg:p-0 lg:overflow-visible">
                 <table className="table-feedback  my-4">
                     <thead>
                             <th>Id</th>
@@ -112,6 +112,7 @@ const AdminDashboard = () => {
 
             {/* Web Feedback Table */}
             {activeTable === "Web-Feedback" && (
+            <section className="overflow-x-auto p-5 lg:p-0 lg:overflow-visible">
                 <table className="table-feedback overflow-auto lg:overflow-hidden my-4">
                     <thead>     
                             <th>Id</th>     
@@ -132,6 +133,7 @@ const AdminDashboard = () => {
                         ))}
                     </tbody>
                 </table>
+             </section>
             )}
         </header>
     );

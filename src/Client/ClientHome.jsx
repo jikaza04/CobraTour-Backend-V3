@@ -47,15 +47,16 @@ function ClientHome() {
           <span className='text-light-maroon'>COBRATOUR</span> is a campus navigation website for Southwestern University PHINMA <span className='text-light-maroon'>main campus</span> , helping freshmen or guests easily locate key areas on campus. 
           </p>
         </div>
-        <div className='home-about-container'>
-          <p className='text-6xl lg:w-96 font-bold lg:px-3'>
+      <Link to='/clientExplore'>
+        <div className='home-about-container cursor-pointer'>
+          <p className='lg:text-6xl text-5xl lg:p-0 md:p-0 p-2 lg:w-96 font-bold lg:px-3'>
           Explore with <br/> our <span className='text-light-maroon'> 3D</span> <br/>map
           </p>
           <div className='m-0 p-0 flex justify-end '>
             <img src={Isomap} alt="isomap" className='w-iso h-fit border-none relative left-20 lg:left-10  ' />
           </div>
         </div>
-        
+      </Link>
       </section>
       
       <section className='mx-10 my-5 p-5 lg:mx-20 block' id='faq-section'>

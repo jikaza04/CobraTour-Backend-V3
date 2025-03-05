@@ -273,7 +273,7 @@ function AdminContent() {
                 {/* Delete Warning Modal */}
                 {deleteModal && (
                     <section id="warning-modal" className="modal-section" onClick={closeDeleteModal}>
-                        <div className="modal-content justify-center items-center size-3/5" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content justify-center items-center lg:size-3/5" onClick={(e) => e.stopPropagation()}>
                             <span className="flex flex-col items-center">
                                 <img src={AdminWarning} alt="Warning" className="w-36" />
                                 <h1 className="font-bold text-2xl">WARNING!</h1>
@@ -289,7 +289,7 @@ function AdminContent() {
                 {/* Add Content Modal */}
                 {addModal && (
                     <section id="add-modal" className="modal-section" onClick={closeAddModal}>
-                        <div className="modal-content w-full h-v-modal mx-4 lg:size-3/5" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content h-v-modal mx-4 lg:size-3/5" onClick={(e) => e.stopPropagation()}>
                             <span className="flex flex-col overflow-hidden w-full lg:size-full justify-center items-center border-dashed border-2 m-1 rounded-3xl border-maroon-custom">
                                 {newContent.image ? (
                                     <img src={newContent.image} className="h-50" alt="Selected" style={{ objectFit: 'fit' }} />
