@@ -117,7 +117,7 @@ function ControlDashboard() {
           </div>
           <div className='flex flex-col items-center justify-stretch text-center mx-1'>
           <StatusHistory status="Removed"/>
-          <label >02/09/26</label>
+          <label >02/09/27</label>
           </div>
         </div>
       </div>
