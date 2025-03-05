@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 import { collection, query, onSnapshot } from 'firebase/firestore';
-import { db } from '/Users/DELL/Desktop/CobtraTour Web/CobraTour-V2/src/config/firebase';  // Adjust path if needed
+import { db } from '/src/config/firebase';  // Adjust path if needed
 
 // Register Chart.js components
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
