@@ -4,7 +4,7 @@ import SuccessIcon from "./Icons/success.svg";
 import { motion } from "framer-motion";
 import { db } from "../config/firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-
+import LoadingAnimation from '../LoadingAnimation';
 function ClientFeedback() {
   const [dropDown, setDropDown] = useState(false);
   const [satisfaction, setSatisfaction] = useState(false);
@@ -17,10 +17,10 @@ function ClientFeedback() {
   const [location, setLocation] = useState("");
   const [classifications, setClassifications] = useState("");
   const [feedbackType, setFeedbackType] = useState("Web Feedback"); // Default collection
-
+  const [loading,setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       await addDoc(collection(db, feedbackType), {
         email,
@@ -42,6 +42,8 @@ function ClientFeedback() {
       setClassifications(""); // Reset classification
     } catch (error) {
       console.error("Error adding document: ", error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -260,6 +262,11 @@ function ClientFeedback() {
             </motion.div>
           )}
         </section>
+        {loading && (
+                    <div className='z-50'>
+                        <LoadingAnimation />
+                    </div>
+            )}
       </section>
     </motion.div>
   );

@@ -18,7 +18,7 @@ import ControlAccount from './ControlAdmin/ControlAccount';
 import ControlLogin from './ControlAdmin/ControlLogin';
 import CoryAI from './Client/Cory';
 import ProtectedRoute from './PrivateRoute';
-
+import LoadingAnimation from './LoadingAnimation';
 function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === '/adminLogin';
@@ -87,6 +87,9 @@ function App() {
 
             {/* Error Page */}
             <Route path="*" element={<ErrorPage />} />
+
+            {/* Loading Animation */}
+            <Route path='/loading' element={<LoadingAnimation/>}/>
           </Routes>
         </section>
       </div>

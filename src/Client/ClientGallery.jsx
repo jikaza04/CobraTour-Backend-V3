@@ -83,7 +83,7 @@ function ClientGallery() {
               <motion.section
                 id="modal-sec"
                 onClick={closeModal}
-                className="modal-section"
+                className="modal-section z-bring-front"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -98,7 +98,7 @@ function ClientGallery() {
                   transition={{ duration: 0.2 }}
                 >
                   <div className="aspect-video overflow-hidden flex items-center">
-                    <img src={selectedLocation.Image} alt={selectedLocation.Name}  />
+                    <img src={selectedLocation.Image} alt={selectedLocation.Name}   />
                   </div>
                   <div className="flex my-2 lg:my-5 flex-col justify-start size-full">
                     <div className="flex flex-row items-center mx-4">
@@ -106,10 +106,15 @@ function ClientGallery() {
                         {selectedLocation.Name}
                       </label>
                     </div>
+                <div className='flex flex-col gap-y-5'>
+                    <div className="gal-cont-inf">
+                      <p>{selectedLocation.Location}</p>
+                    </div>
                     <div className="gal-cont-inf">
                       <p>{selectedLocation.Description}</p>
                     </div>
                   </div>
+                </div>
                 </motion.div>
               </motion.section>
             )}

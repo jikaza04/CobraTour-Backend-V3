@@ -330,7 +330,7 @@ body{
     border
     mt-2
     duration-300
-    w-1/4
+    w-full
     ;
   }
 }
@@ -344,7 +344,7 @@ body{
     border
     mt-2
     duration-300
-    w-1/4
+    w-full
     ;
   }
 }
@@ -359,7 +359,7 @@ body{
   .modal-section{
     
     @apply
-    z-bring-front
+    
     bg-modal
     fixed
     flex

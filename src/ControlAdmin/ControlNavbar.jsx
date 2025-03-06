@@ -22,7 +22,7 @@ function ControlNavbar() {
 
   return (
     
-      <aside className="z-bring-front">
+      <aside >
         
         {isMobileView && (
           <div className="general-nav" onClick={() => setOpenNav((prev) => !prev)}>

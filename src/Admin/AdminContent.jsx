@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { db } from '../config/firebase';
 import { collection, addDoc, onSnapshot, deleteDoc, doc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
-
+import LoadingAnimation from '../LoadingAnimation';
 import SearchIcon from './AdminIcons/search.svg';
 import AddIcon from './AdminIcons/AdminAdd.svg';
 import DeleteAll from './AdminIcons/AdminDelete.svg';
 import ContentEditIcon from './AdminIcons/ContentEdit.svg';
 import AdminContentInsert from './AdminIcons/AdminContentInsert.svg';
 import AdminWarning from './AdminIcons/alarm3.png';
+import { set } from 'firebase/database';
 
 
 function AdminContent() {
@@ -18,7 +19,7 @@ function AdminContent() {
     const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
     const [contentToDelete, setContentToDelete] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-
+    const [loading, setLoading] = useState(false);
     const [contentList, setContentList] = useState([]);
     const [newContent, setNewContent] = useState({ name: '', location: '', description: '', image: '' });
     const [editContent, setEditContent] = useState({ id: null, name: '', location: '', description: '', image: '' });
@@ -98,6 +99,7 @@ function AdminContent() {
 
     const handleAddContent = async (e) => {
         e.preventDefault();
+        setLoading(true);
         console.log('Adding content:', newContent);
     
         if (newContent.name && newContent.location && newContent.description && newContent.image) {
@@ -122,6 +124,8 @@ function AdminContent() {
                 } catch (error) {
                     console.error("Error adding document to Firestore:", error);
                     alert('Failed to add content to Firestore. Please try again.');
+                }finally{
+                    setLoading(false);
                 }
             } else {
                 alert('Failed to upload image. Please try again.');
@@ -132,40 +136,39 @@ function AdminContent() {
     };
 
     const handleEditContent = async (e) => {
-        e.preventDefault();  // Prevent the default form submission behavior
-    
-        // Check if the image has been changed and needs to be uploaded
-        const imageUrl = editContent.image.startsWith('data:') ? await uploadImage(editContent.image) : editContent.image;
+        e.preventDefault();
+        
+        // Upload image only if a new one was selected
+        const imageUrl = editContent.image.startsWith('data:') 
+            ? await uploadImage(editContent.image) 
+            : editContent.image;
     
         if (imageUrl) {
-            const updatedContentData = { ...editContent, image: imageUrl };
-    
             try {
-                // Update the Firestore document with the new details
                 await updateDoc(doc(db, "Content", editContent.id), {
-                    Name: updatedContentData.name,
-                    Location: updatedContentData.location,
-                    Description: updatedContentData.description,
-                    Image: updatedContentData.image,
+                    Name: editContent.name,
+                    Location: editContent.location,
+                    Description: editContent.description,
+                    Image: imageUrl,  // Use uploaded image URL if changed
                 });
     
-                // Update the local state with the new content details
-                setContentList((prev) =>
-                    prev.map((content) =>
-                        content.id === editContent.id ? updatedContentData : content
+                setContentList((prev) => 
+                    prev.map((content) => 
+                        content.id === editContent.id ? { ...editContent, Image: imageUrl } : content
                     )
                 );
     
                 console.log('Content updated successfully.');
-                setEditModal(false);  // Close the edit modal
+                setEditModal(false);
             } catch (error) {
-                console.error("Error updating document in Firestore:", error);
-                alert('Failed to update content in Firestore. Please try again.');
+                console.error("Error updating document:", error);
+                alert('Failed to update content.');
             }
         } else {
-            alert('Failed to upload image. Please try again.');
+            alert('Failed to upload image.');
         }
     };
+    
 
     const confirmDeleteContent = (content) => {
         setContentToDelete(content);
@@ -173,6 +176,7 @@ function AdminContent() {
     };
 
     const handleDeleteContent = async () => {
+        setLoading(true);
         if (contentToDelete) {
             try {
                 await deleteDoc(doc(db, "Content", contentToDelete.id));
@@ -182,12 +186,15 @@ function AdminContent() {
             } catch (error) {
                 console.error("Error deleting document from Firestore:", error);
                 alert('Failed to delete content from Firestore. Please try again.');
+            }finally{
+                setLoading(false);
             }
         }
     };
 
     const handleDeleteAllContent = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const contentCollection = collection(db, "Content");
             const snapshot = await getDocs(contentCollection);
@@ -211,6 +218,8 @@ function AdminContent() {
         } catch (error) {
             console.error("Error deleting all documents from Firestore:", error);
             alert('Failed to delete all content from Firestore. Please try again.');
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -226,6 +235,7 @@ function AdminContent() {
 
     return (
         <>
+        
             {/* Header Section with Search Bar */}
             <section className="m-5 inter">
                 <div className="flex flex-col lg:flex-row gap-5 items-start ">
@@ -320,8 +330,8 @@ function AdminContent() {
                 {editModal && (
                     <section id="content-modal" className="modal-section" onClick={closeEditModal}>
                         <div className="modal-content size-3/5" onClick={(e) => e.stopPropagation()}>
-                            <span className="flex flex-col w-full justify-end items-center">
-                                <img src={editContent.image} className="h-full" alt="Content" style={{ objectFit: 'cover' }} />
+                            <span className="flex flex-col w-full justify-end items-center">    
+                            <img src={editContent.image} className="h-full" alt="Content" style={{ objectFit: 'cover' }} />
                                 <label htmlFor="edit-file-input" className="modal-change-button cursor-pointer">Change Image</label>
                                 <input id="edit-file-input" type="file" accept="image/*" className="hidden" onChange={handleEditImageChange} />
                             </span>
@@ -347,7 +357,7 @@ function AdminContent() {
                                 <img src={AdminWarning} alt="Warning" className="w-36" />
                                 <h1 className="font-bold text-2xl">WARNING!</h1>
                                 <label>ARE YOU SURE YOU WANT TO DELETE THIS CONTENT?</label>
-                                <div className="flex gap-4 mt-4">
+                                <div className="grid grid-cols-2 gap-4 mt-4">
                                     <button className="input-remove" onClick={handleDeleteContent}>Yes</button>
                                     <button className="input-submit" onClick={() => setConfirmDeleteModal(false)}>No</button>
                                 </div>
@@ -355,7 +365,13 @@ function AdminContent() {
                         </div>
                     </section>
                 )}
+                {loading && (
+                    <div className='z-50'>
+                        <LoadingAnimation />
+                    </div>
+                )}
             </section>
+            
         </>
     );
 }

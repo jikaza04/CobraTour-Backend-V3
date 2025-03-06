@@ -39,7 +39,7 @@
         }
     };
         return (
-            <header className="inter z-bring-front">
+            <header className="inter ">
                 {isMobileView && (
                     <div className="general-nav" onClick={() => setOpenNav((prev) => !prev)}>
                         <img src={HamburgerIcon} alt="Menu" className="lg:hidden" />

@@ -63,7 +63,8 @@ export default {
         'box-contain': '0px 0px 3px black',
       },
       zIndex:{
-        'bring-front': "999",
+        'bring-front': "800",
+        'overlay-front': "999",
       }
     },
   },
