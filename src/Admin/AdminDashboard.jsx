@@ -35,7 +35,7 @@ const AdminDashboard = () => {
         <header className="header-margin inter">
             <label className="text-4xl font-semibold">STATISTICS</label>
             <section className="admin-chart-layout my-5">
-                <div className="admin-charts">
+                <div className="admin-charts -z-bring-front">
                     <BarChart />
                 </div>
                 <div className="inline-block">
