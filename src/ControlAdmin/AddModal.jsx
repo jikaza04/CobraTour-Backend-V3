@@ -5,86 +5,72 @@ import SearchIcon from './AdminIcons/search.svg';
 import AccountProfile from './AdminIcons/account-profile.svg'
 import HistoryIcon from './AdminIcons/history.svg'
 import HistoryModal from './AdminIcons/historyModal.svg'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import StatusHistory from './StatusHistory'
 import { motion } from 'motion/react';
 import { db, auth } from "../config/firebase";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function ControlDashboard() {
+
   const [controlModal, setControlModal] = useState(false);
-  const [totalContributors, setTotalContributors] = useState(0);
-  const [contributors, setContributors] = useState([]);
-  const [selectedContributor, setSelectedContributor] = useState(null);
-
-  useEffect(() => {
-    const fetchContributors = async () => {
-      const querySnapshot = await getDocs(collection(db, "Contributors"));
-      setTotalContributors(querySnapshot.size);
-      setContributors(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    };
-
-    fetchContributors();
-  }, []);
+  const [name, setName] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const openModal = () => {
-    setControlModal(true);
+    setControlModal(true)
   };
   const closeModal = () => {
-    setControlModal(false);
+    setControlModal(false)
   };
 
   const [accountView, setAccountView] = useState(false);
 
-  const openAccountView = (contributor) => {
-    setSelectedContributor(contributor);
-    setAccountView(true);
+  const openAccountView = () => {
+    setAccountView(true)
   };
   const closeAccountView = () => {
-    setAccountView(false);
-    setSelectedContributor(null);
+    setAccountView(false)
   };
-
   const [historyModal, setHistoryModal] = useState(false);
 
   const openHistoryModal = () => {
-    setHistoryModal(true);
+    setHistoryModal(true)
   };
   const closeHistoryModal = () => {
-    setHistoryModal(false);
-  };
+    setHistoryModal(false)
+  }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const { name, contributorID, contributorEmail, contributorPassword } = event.target.elements;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
-      // Create user with email and password in Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, contributorEmail.value, contributorPassword.value);
-      const user = userCredential.user;
-
-      // Add contributor details to Firestore
-      await addDoc(collection(db, "Contributors"), {
-        name: name.value,
-        employeeID: contributorID.value,
-        email: contributorEmail.value,
-        password: contributorPassword.value,
-        userId: user.uid,
+      // 1. Store Name and Employee ID to Firestore
+      const contributorsCollectionRef = collection(db, "Contributor");
+      await addDoc(contributorsCollectionRef, {
+        name: name,
+        employeeId: employeeId,
       });
 
-      // Update the total contributors count and list
-      const querySnapshot = await getDocs(collection(db, "Contributors"));
-      setTotalContributors(querySnapshot.size);
-      setContributors(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      // 2. Create User in Firebase Authentication
+      await createUserWithEmailAndPassword(auth, email, password);
 
-      // Close the modal after successful submission
+      // 3. Close the modal
       closeModal();
+      // Clear the form fields
+      setName("");
+      setEmployeeId("");
+      setEmail("");
+      setPassword("");
+
     } catch (error) {
-      console.error("Error adding contributor: ", error);
+      console.error("Error adding contributor:", error);
+      alert("Failed to add contributor. Please check the console for errors.");
     }
   };
-
   return (
     <motion.div
       initial={{ y: 100, opacity: 0 }}
@@ -95,18 +81,20 @@ function ControlDashboard() {
         <section className="w-full p-5 bg-maroon-custom ">
           <div className="flex flex-row justify-between text-white">
             <label className="text-xl font-medium">Control Admin</label>
+
           </div>
         </section>
         <section className="control-summary-section">
           <div className="control-summary-container">
             <img src={ControlTotal} alt="" className='lg:size-auto size-28 ' />
             <label>Total contributors: </label>
-            <span className="text-maroon-custom">{totalContributors}</span>
+            <span className="text-maroon-custom">00</span>
           </div>
           <div className="control-summary-container cursor-pointer" onClick={openModal}>
             <img src={ControlAdd} alt="" className='lg:size-auto size-28 ' />
             <img src={AddIcon} alt="" className='lg:size-auto size-8 ' />
             <label>Add Contributor </label>
+
           </div>
         </section>
 
@@ -120,46 +108,50 @@ function ControlDashboard() {
               <img src={SearchIcon} alt="search" className='w-9' />
               <input type='search' name='search-admin-account' placeholder='search' />
             </form>
-            {contributors.map((contributor, index) => (
-              <div key={index} className='control-account-list' onClick={() => openAccountView(contributor)}>
-                <img src={AccountProfile} alt="" />
-                <label>{contributor.name}</label>
-              </div>
-            ))}
+            <div className='control-account-list' onClick={openAccountView}>
+              <img src={AccountProfile} alt="" />
+              <label>Sample Name</label>
+            </div>
           </div>
 
-          {/* Add Contributors Modal */}
+          {/*Add Contributors Modal*/}
           {controlModal && (
             <motion.div
-              initial={{ opacity:0 }}
-              animate={{ opacity:1 }}
-              transition={{ duration:0.5 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
             >
-              <section className='modal-section overflow-hidden'>
+              <section className='modal-section overflow-hidden' >
                 <div className='modal-control'>
                   <img src={ControlAdd} alt="" className='min-w-72 max-w-80 ' />
                   <label className='text-2xl font-semibold'>Add Contributor</label>
                   <form onSubmit={handleSubmit}>
                     <label className='font-medium'>Name:</label>
-                    <input type="text" placeholder='Name' name='name' required />
+                    <input type="text" placeholder='Name' name='contributor name' required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)} />
                     <label className='font-medium'>Employee ID:</label>
-                    <input type="text" placeholder='Employee ID' name='contributorID' required />
+                    <input type="text" placeholder='Employee ID' name='contributor ID' required
+                      value={employeeId}
+                      onChange={(e) => setEmployeeId(e.target.value)} />
                     <label className='font-medium'>Email:</label>
-                    <input type="email" placeholder='Email' name='contributorEmail' required />
+                    <input type="email" placeholder='Email' name='contributor Email' required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)} />
                     <label className='font-medium'>Password:</label>
-                    <input type="password" placeholder='password' name='contributorPassword' required />
+                    <input type="password" placeholder='password' name='contributor password' required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)} />
                     <div className='flex w-full items-center gap-5 p-2 content-end justify-end'>
                       <button type='button' className='bg-admin-hovergray p-2 rounded-md' onClick={closeModal}>Cancel</button>
-                      <button className='bg-maroon-custom text-white p-2 rounded-md' type='submit'>Submit</button>
+                      <button className='bg-maroon-custom text-white p-2 rounded-md' type='submit' >Submit</button>
                     </div>
                   </form>
                 </div>
               </section>
             </motion.div>
-          )}
-
-          {/* History List Ni Aejay */}
-          <div className='control-contents h-72'>
+          )}...{/* History List Ni Aejay*/}
+          <div className='control-contents h-72' >
             <div className='flex justify-center text-center'>
               <label className='text-xl font-bold mt-5'>History</label>
             </div>
@@ -174,57 +166,57 @@ function ControlDashboard() {
               </div>
               <div className='flex flex-col items-center justify-stretch text-center mx-1'>
                 <StatusHistory status="Removed" />
-                <label>02/09/27</label>
+                <label >02/09/27</label>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Account View ni Aejay */}
-        {accountView && selectedContributor && (
+        {/*Account View ni Aejay*/}
+        {accountView && (
           <motion.div
-            initial={{ opacity:0 }}
-            animate={{ opacity:1 }}
-            transition={{ duration:0.5 }}
-            style={{ zIndex:1000 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            style={{ zIndex: 1000 }}
           >
             <section className='modal-section overflow-hidden'>
               <div className='modal-control'>
                 <article className='flex flex-col items-center'>
-                  <div className='control-profile'>
+                  <div className='control-profile '>
                     <img src={ControlTotal} alt="" />
                   </div>
-                  <label className='text-lg font-semibold'>{selectedContributor.name}</label>
-                  <label className='text-sm'>{selectedContributor.employeeID}</label>
+                  <label className='text-lg font-semibold'>Sample Name</label>
+                  <label className='text-sm'>05-2324-008906</label>
                 </article>
                 <form>
                   <label>Name:</label>
-                  <input type="text" name='Admin-Name' placeholder='Name' value={selectedContributor.name} readOnly />
+                  <input type="text" name='Admin-Name' placeholder='Name' required />
                   <label>Employee ID:</label>
-                  <input type="text" name='Admin-ID' placeholder='Employee ID' value={selectedContributor.employeeID} readOnly />
+                  <input type="text" name='Admin-ID' placeholder='Employee ID' required />
                   <label>Email:</label>
-                  <input type="email" name='Admin-Email' placeholder='Email' value={selectedContributor.email} readOnly />
+                  <input type="email" name='Admin-Email' placeholder='Email' required />
                   <label>Password:</label>
-                  <input type="password" name='Admin-password' placeholder='Password' value={selectedContributor.password} readOnly />
+                  <input type="password" name='Admin-password' placeholder='Password' required />
                   <div className='flex w-full items-center gap-5 p-2 content-end justify-between'>
                     <button type='button' className='bg-admin-hovergray p-2 rounded-md' onClick={closeAccountView}>Cancel</button>
                     <div className='flex flex-row gap-3'>
-                      <button className='bg-maroon-custom text-white p-2 rounded-md' type='submit' onClick={openAccountView}>Submit</button>
-                      <button className='bg-maroon-custom text-white p-2 rounded-md' type='button'>Remove</button>
+                      <button className='bg-maroon-custom text-white p-2 rounded-md' type='submit' onClick={openAccountView} >Submit</button>
+                      <button className='bg-maroon-custom text-white p-2 rounded-md' type='button' >Remove</button>
                     </div>
                   </div>
                 </form>
+
               </div>
             </section>
           </motion.div>
         )}
-
-        {/* History Modal ni Aejay */}
+        {/*History Modal ni Aejay*/}
         {historyModal && (
           <motion.div
-            initial={{ opacity:0 }}
-            animate={{ opacity:1 }}
-            transition={{ duration:0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
             <section className='modal-section overflow-hidden'>
               <div className='modal-control'>
@@ -248,11 +240,13 @@ function ControlDashboard() {
                     <li>ivje.clarion.swu@phinmaed.com</li>
                   </ul>
                   <ul className='flex flex-col items-center'>
+
                     <label className='font-semibold text-lg'>Status</label>
                     <span className='flex flex-row gap-2'>
                       <StatusHistory status='Updated' />
                     </span>
                   </ul>
+
                 </article>
                 <div className='flex w-full items-center gap-3 p-2 content-end justify-end'>
                   <button type='button' className='bg-admin-hovergray p-2 rounded-md' onClick={closeHistoryModal}>Cancel</button>
@@ -264,7 +258,7 @@ function ControlDashboard() {
         )}
       </section>
     </motion.div>
-  );
+  )
 }
 
-export default ControlDashboard;
+export default ControlDashboard
