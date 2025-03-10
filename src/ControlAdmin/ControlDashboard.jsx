@@ -17,6 +17,8 @@ function ControlDashboard() {
   const [totalContributors, setTotalContributors] = useState(0);
   const [contributors, setContributors] = useState([]);
   const [selectedContributor, setSelectedContributor] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchHistoryTerm, setSearchHistoryTerm] = useState('');
 
   useEffect(() => {
     const fetchContributors = async () => {
@@ -48,11 +50,13 @@ function ControlDashboard() {
 
   const [historyModal, setHistoryModal] = useState(false);
 
-  const openHistoryModal = () => {
+  const openHistoryModal = (contributor) => {
+    setSelectedContributor(contributor);
     setHistoryModal(true);
   };
   const closeHistoryModal = () => {
     setHistoryModal(false);
+    setSelectedContributor(null);
   };
 
   const handleSubmit = async (event) => {
@@ -71,6 +75,8 @@ function ControlDashboard() {
         email: contributorEmail.value,
         password: contributorPassword.value,
         userId: user.uid,
+        status: 'Added',
+        date: new Date().toLocaleDateString()
       });
 
       // Update the total contributors count and list
@@ -84,6 +90,16 @@ function ControlDashboard() {
       console.error("Error adding contributor: ", error);
     }
   };
+
+  const filteredContributors = contributors.filter(contributor =>
+    contributor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    contributor.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredHistory = contributors.filter(contributor =>
+    contributor.name.toLowerCase().includes(searchHistoryTerm.toLowerCase()) ||
+    contributor.email.toLowerCase().includes(searchHistoryTerm.toLowerCase())
+  );
 
   return (
     <motion.div
@@ -118,9 +134,15 @@ function ControlDashboard() {
             </div>
             <form className='control-form'>
               <img src={SearchIcon} alt="search" className='w-9' />
-              <input type='search' name='search-admin-account' placeholder='search' />
+              <input
+                type='search'
+                name='search-admin-account'
+                placeholder='search'
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </form>
-            {contributors.map((contributor, index) => (
+            {filteredContributors.map((contributor, index) => (
               <div key={index} className='control-account-list' onClick={() => openAccountView(contributor)}>
                 <img src={AccountProfile} alt="" />
                 <label>{contributor.name}</label>
@@ -158,29 +180,37 @@ function ControlDashboard() {
             </motion.div>
           )}
 
-          {/* History List Ni Aejay */}
+          {/* History List */}
           <div className='control-contents h-72'>
             <div className='flex justify-center text-center'>
               <label className='text-xl font-bold mt-5'>History</label>
             </div>
             <form className='control-form'>
               <img src={SearchIcon} alt="search" className='w-9' />
-              <input type='search' name='search-admin-history' placeholder='search' />
+              <input
+                type='search'
+                name='search-admin-history'
+                placeholder='search'
+                value={searchHistoryTerm}
+                onChange={(e) => setSearchHistoryTerm(e.target.value)}
+              />
             </form>
-            <div className='control-account-list justify-between' onClick={openHistoryModal}>
-              <div className='flex items-center gap-x-5'>
-                <img src={HistoryIcon} alt="" />
-                <label>Sample Email</label>
+            {filteredHistory.map((contributor, index) => (
+              <div key={index} className='control-account-list justify-between' onClick={() => openHistoryModal(contributor)}>
+                <div className='flex items-center gap-x-5'>
+                  <img src={HistoryIcon} alt="" />
+                  <label>{contributor.email}</label>
+                </div>
+                <div className='flex flex-col items-center justify-stretch text-center mx-1'>
+                  <StatusHistory status={contributor.status} />
+                  <label>{contributor.date}</label>
+                </div>
               </div>
-              <div className='flex flex-col items-center justify-stretch text-center mx-1'>
-                <StatusHistory status="Removed" />
-                <label>02/09/27</label>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
-        {/* Account View ni Aejay */}
+        {/* Account View */}
         {accountView && selectedContributor && (
           <motion.div
             initial={{ opacity:0 }}
@@ -219,8 +249,8 @@ function ControlDashboard() {
           </motion.div>
         )}
 
-        {/* History Modal ni Aejay */}
-        {historyModal && (
+        {/* History Modal */}
+        {historyModal && selectedContributor && (
           <motion.div
             initial={{ opacity:0 }}
             animate={{ opacity:1 }}
@@ -233,24 +263,24 @@ function ControlDashboard() {
                 <article className='grid grid-cols-2 text-sm lg:text-xl lg:grid-cols-3 size-full justify-evenly break-before-all items-start'>
                   <ul className='flex flex-col items-center'>
                     <label className='font-semibold text-lg'>Date</label>
-                    <li>02/24/25</li>
+                    <li>{selectedContributor.date}</li>
                   </ul>
                   <ul className='flex flex-col items-center'>
                     <label className='font-semibold text-lg'>Employee ID</label>
-                    <li>05-2324-008906</li>
+                    <li>{selectedContributor.employeeID}</li>
                   </ul>
                   <ul className='flex flex-col items-center'>
                     <label className='font-semibold text-lg'>Name</label>
-                    <li>Ivan Dale Clarion</li>
+                    <li>{selectedContributor.name}</li>
                   </ul>
                   <ul className='flex flex-col items-center'>
                     <label className='font-semibold text-lg'>Email</label>
-                    <li>ivje.clarion.swu@phinmaed.com</li>
+                    <li>{selectedContributor.email}</li>
                   </ul>
                   <ul className='flex flex-col items-center'>
                     <label className='font-semibold text-lg'>Status</label>
                     <span className='flex flex-row gap-2'>
-                      <StatusHistory status='Updated' />
+                      <StatusHistory status={selectedContributor.status} />
                     </span>
                   </ul>
                 </article>
