@@ -20,7 +20,7 @@ function ControlLogin() {
     setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/ControlDashboard");
+      navigate("/controlDashboard");
     } catch (err) {
       setError("Invalid email or password. Please try again.");
       console.error(err);
