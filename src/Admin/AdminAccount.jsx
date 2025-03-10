@@ -1,8 +1,9 @@
 import SampleProfile from './AdminImages/ivan.jpeg'
 import { useState, useEffect } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
-import { db } from '../config/firebase'; // Import Firestore instance
+import { db, auth } from '../config/firebase'; // Import Firestore instance and auth
 import { updateDoc, getDocs, collection, query, where } from 'firebase/firestore';
+import { updateEmail, updatePassword, sendEmailVerification } from 'firebase/auth';
 
 function AdminAccount() {
   const [newUserName, setNewUserName] = useState(false);
@@ -13,6 +14,7 @@ function AdminAccount() {
   const [newEmail, setNewEmail] = useState('');
   const [newPass, setNewPass] = useState('');
   const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  const [verificationSent, setVerificationSent] = useState(false); // State to track email verification
 
   useEffect(() => {
     const storedContributor = JSON.parse(localStorage.getItem('contributor'));
@@ -42,20 +44,29 @@ function AdminAccount() {
   const handleUsernameSubmit = async (e) => {
     e.preventDefault();
     try {
-      const q = query(collection(db, 'Contributors'), where('userId', '==', contributor.userId));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;
-        await updateDoc(docRef, {
-          email: newEmail
-        });
-        setContributor({ ...contributor, email: newEmail });
-        localStorage.setItem('contributor', JSON.stringify({ ...contributor, email: newEmail }));
-        setNewUserName(false);
-        setShowPopup(true); // Show popup
-        setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
-      } else {
-        console.error('No such document!');
+      const user = auth.currentUser;
+      if (user) {
+        if (!user.emailVerified) {
+          await sendEmailVerification(user);
+          setVerificationSent(true);
+          return;
+        }
+        await updateEmail(user, newEmail);
+        const q = query(collection(db, 'Contributors'), where('userId', '==', contributor.userId));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const docRef = querySnapshot.docs[0].ref;
+          await updateDoc(docRef, {
+            email: newEmail
+          });
+          setContributor({ ...contributor, email: newEmail });
+          localStorage.setItem('contributor', JSON.stringify({ ...contributor, email: newEmail }));
+          setNewUserName(false);
+          setShowPopup(true); // Show popup
+          setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+        } else {
+          console.error('No such document!');
+        }
       }
     } catch (error) {
       console.error('Error updating username: ', error);
@@ -65,20 +76,24 @@ function AdminAccount() {
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     try {
-      const q = query(collection(db, 'Contributors'), where('userId', '==', contributor.userId));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;
-        await updateDoc(docRef, {
-          password: newPass
-        });
-        setContributor({ ...contributor, password: newPass });
-        localStorage.setItem('contributor', JSON.stringify({ ...contributor, password: newPass }));
-        setNewPassword(false);
-        setShowPopup(true); // Show popup
-        setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
-      } else {
-        console.error('No such document!');
+      const user = auth.currentUser;
+      if (user) {
+        await updatePassword(user, newPass);
+        const q = query(collection(db, 'Contributors'), where('userId', '==', contributor.userId));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const docRef = querySnapshot.docs[0].ref;
+          await updateDoc(docRef, {
+            password: newPass
+          });
+          setContributor({ ...contributor, password: newPass });
+          localStorage.setItem('contributor', JSON.stringify({ ...contributor, password: newPass }));
+          setNewPassword(false);
+          setShowPopup(true); // Show popup
+          setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+        } else {
+          console.error('No such document!');
+        }
       }
     } catch (error) {
       console.error('Error updating password: ', error);
@@ -123,6 +138,9 @@ function AdminAccount() {
                     <input type='submit' name='newusername' className='account-submit'></input>
                   </span>
                 </form>
+              )}
+              {verificationSent && (
+                <p className="text-maroon-custom">Please verify your email before changing it.</p>
               )}
             </span>
             <button onClick={openNewuserName} className='button-dashboard'>Edit Username</button>
