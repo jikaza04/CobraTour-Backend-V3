@@ -4,39 +4,64 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import SwitchIcon from '../ControlAdmin/AdminIcons/switchicon.svg';
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "../config/firebase"; // Assuming you have a Firestore instance
 import { useNavigate } from "react-router-dom";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      // Query Firestore for the contributor's email and password
-      const q = query(collection(db, "Contributors"), where("email", "==", email), where("password", "==", password));
+      // Sign in the user with Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Query Firestore for the contributor's email
+      const q = query(collection(db, "Contributors"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        // If a matching contributor is found, sign in the user
+        // If a matching contributor is found, store contributor's info in local storage
         const contributor = querySnapshot.docs[0].data();
-        await signInWithEmailAndPassword(auth, email, password);
-        
-        // Store contributor's info in local storage
+        contributor.password = password; // Update the password in the contributor object
         localStorage.setItem('contributor', JSON.stringify(contributor));
-        
+
+        // Update the Firestore document with the new password
+        const docRef = querySnapshot.docs[0].ref;
+        await updateDoc(docRef, {
+          password: password
+        });
+
         navigate("/adminDashboard");
       } else {
         setError("No such account existed.");
       }
     } catch (err) {
       setError("Invalid email or password. Please try again.");
+      console.error(err);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    setError("");
+    setMessage("");
+    if (!email) {
+      setError("Please enter your email address.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setMessage("Password reset email sent. Please check your inbox.");
+    } catch (err) {
+      setError("Failed to send password reset email. Please try again.");
       console.error(err);
     }
   };
@@ -80,12 +105,14 @@ function AdminLogin() {
                 <button
                   type="button"
                   className="border-maroon-custom border p-1 rounded-md duration-300 hover:bg-maroon-custom hover:text-white"
+                  onClick={handleForgotPassword}
                 >
                   Forgot Password
                 </button>
               </span>
               <span className="text-xs break-words">
                 {error && <p className="text-maroon-custom text-center">{error}</p>}
+                {message && <p className="text-green-500 text-center">{message}</p>}
               </span>
             </form>
             <Link to="/loginControl">

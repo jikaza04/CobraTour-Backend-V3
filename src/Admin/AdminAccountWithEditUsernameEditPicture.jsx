@@ -26,10 +26,10 @@ function AdminAccount() {
     }
   }, []);
 
-  const openNewuserName = () => setNewUserName(true); //Please ignore this VAN Bahalag RED. Ayaw hilabti
-  const closeNewUsername = () => { //Please ignore this VAN. Ayaw hilabti
-    setNewUserName(false); //Please ignore this VAN. Ayaw hilabti
-    setNewEmail(''); //Please ignore this VAN. Ayaw hilabti
+  const openNewuserName = () => setNewUserName(true);
+  const closeNewUsername = () => {
+    setNewUserName(false);
+    setNewEmail('');
   };
 
   const openNewPassword = () => setNewPassword(true);
@@ -79,11 +79,21 @@ function AdminAccount() {
       const user = auth.currentUser;
       if (user) {
         await updatePassword(user, newPass);
-        setContributor({ ...contributor, password: newPass });
-        localStorage.setItem('contributor', JSON.stringify({ ...contributor, password: newPass }));
-        setNewPassword(false);
-        setShowPopup(true); // Show popup
-        setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+        const q = query(collection(db, 'Contributors'), where('userId', '==', contributor.userId));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const docRef = querySnapshot.docs[0].ref;
+          await updateDoc(docRef, {
+            password: newPass
+          });
+          setContributor({ ...contributor, password: newPass });
+          localStorage.setItem('contributor', JSON.stringify({ ...contributor, password: newPass }));
+          setNewPassword(false);
+          setShowPopup(true); // Show popup
+          setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+        } else {
+          console.error('No such document!');
+        }
       }
     } catch (error) {
       console.error('Error updating password: ', error);
@@ -104,6 +114,7 @@ function AdminAccount() {
               <h1 className='lg:text-base text-xs'>CobraTour Admin</h1>
             </span>
           </span>
+          <button className='button-dashboard'>Change Picture</button>
         </section>
         <section className='account-container'>
           <div className='flex flex-col lg:flex-row lg:justify-between items-start lg:items-center my-3'>
@@ -132,6 +143,7 @@ function AdminAccount() {
                 <p className="text-maroon-custom">Please verify your email before changing it.</p>
               )}
             </span>
+            <button onClick={openNewuserName} className='button-dashboard'>Edit Username</button>
           </div>
           <div className='flex flex-col lg:flex-row lg:justify-between items-start lg:items-center my-3'>
             <span className='block'>
@@ -177,7 +189,7 @@ function AdminAccount() {
                 </form>
               )}
             </span>
-            <button onClick={openNewPassword} className='button-dashboard'>Change Password</button>
+            <button onClick={openNewPassword} className='button-dashboard'>Edit Password</button>
           </div>
         </section>
       </section>

@@ -9,8 +9,6 @@ import DeleteAll from './AdminIcons/AdminDelete.svg';
 import ContentEditIcon from './AdminIcons/ContentEdit.svg';
 import AdminContentInsert from './AdminIcons/AdminContentInsert.svg';
 import AdminWarning from './AdminIcons/alarm3.png';
-import { set } from 'firebase/database';
-
 
 function AdminContent() {
     const [editModal, setEditModal] = useState(false);
@@ -34,7 +32,13 @@ function AdminContent() {
     }, []);
 
     const openEditModal = (content) => {
-        setEditContent(content);
+        setEditContent({
+            id: content.id,
+            name: content.Name,
+            location: content.Location,
+            description: content.Description,
+            image: content.Image,
+        });
         setEditModal(true);
     };
 
@@ -160,6 +164,7 @@ function AdminContent() {
     
                 console.log('Content updated successfully.');
                 setEditModal(false);
+                window.location.reload(); // Reload the page to reflect changes
             } catch (error) {
                 console.error("Error updating document:", error);
                 alert('Failed to update content.');

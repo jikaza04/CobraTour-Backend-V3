@@ -1,13 +1,13 @@
-
 import LoginImage from "./AdminImages/LoginImage.jpg"
 import AdminLogo from './AdminLogo/admin-logo.svg';
 import SwitchIcon from './AdminIcons/switchicon.svg';
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase"; // Import db from firebase config
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore"; // Import Firestore functions
 
 function ControlLogin() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,17 @@ function ControlLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
+      // Fetch contributors from Firestore
+      const contributorsSnapshot = await getDocs(collection(db, "Contributors"));
+      const contributors = contributorsSnapshot.docs.map(doc => doc.data().email);
+
+      if (contributors.includes(email)) {
+        setError("Contributors are not allowed to log in here.");
+        return;
+      }
+
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/controlDashboard");
     } catch (err) {

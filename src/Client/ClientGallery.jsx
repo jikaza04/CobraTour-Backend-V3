@@ -2,23 +2,24 @@ import { motion, AnimatePresence, easeIn } from 'framer-motion';
 import ClientSearch from './Icons/ClientSearch.svg';
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 function ClientGallery() {
   const [galleryModal, setGalleryModal] = useState(false);
   const [locations, setLocations] = useState([]); // Initialize as an empty array
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
   useEffect(() => {
-    const fetchLocations = async () => {
-      const querySnapshot = await getDocs(collection(db, 'Content'));
-      const locationsData = querySnapshot.docs.map((doc) => ({
+    const unsubscribe = onSnapshot(collection(db, 'Content'), (snapshot) => {
+      const locationsData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setLocations(locationsData);
-    };
-    fetchLocations();
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const openModal = (location) => {
@@ -27,6 +28,11 @@ function ClientGallery() {
   };
 
   const closeModal = () => setGalleryModal(false);
+
+  // Filter locations based on search query
+  const filteredLocations = locations.filter((location) =>
+    location.Name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -47,12 +53,14 @@ function ClientGallery() {
                   type="search"
                   name="search"
                   placeholder="Search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)} // Update search query state
                 />
               </div>
             </form>
             <section className=" justify-center h-sm md:h-md lg:h-96  overflow-auto">
               <div className="gallery-section ">
-                {locations.map((location) => (
+                {filteredLocations.map((location) => (
                   <div
                     key={location.id}
                     className="gallery-container"
@@ -79,7 +87,6 @@ function ClientGallery() {
           </section>
           <AnimatePresence>
             {galleryModal && selectedLocation && (
-              
               <motion.section
                 id="modal-sec"
                 onClick={closeModal}
@@ -98,7 +105,7 @@ function ClientGallery() {
                   transition={{ duration: 0.2 }}
                 >
                   <div className="aspect-video overflow-hidden flex items-center">
-                    <img src={selectedLocation.Image} alt={selectedLocation.Name}   />
+                    <img src={selectedLocation.Image} alt={selectedLocation.Name} />
                   </div>
                   <div className="flex my-2 lg:my-5 flex-col justify-start size-full">
                     <div className="flex flex-row items-center mx-4">
@@ -106,15 +113,15 @@ function ClientGallery() {
                         {selectedLocation.Name}
                       </label>
                     </div>
-                <div className='flex flex-col gap-y-5'>
-                    <div className="gal-cont-inf">
-                      <p>{selectedLocation.Location}</p>
-                    </div>
-                    <div className="gal-cont-inf">
-                      <p>{selectedLocation.Description}</p>
+                    <div className='flex flex-col gap-y-5'>
+                      <div className="gal-cont-inf">
+                        <p>{selectedLocation.Location}</p>
+                      </div>
+                      <div className="gal-cont-inf">
+                        <p>{selectedLocation.Description}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
                 </motion.div>
               </motion.section>
             )}
