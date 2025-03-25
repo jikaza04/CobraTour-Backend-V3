@@ -8,10 +8,12 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/aut
 import { auth, db } from "../config/firebase"; // Assuming you have a Firestore instance
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -66,6 +68,8 @@ function AdminLogin() {
     }
   };
 
+  const toggleShowPassword = () => setShowPassword(!showPassword); // Toggle function
+
   return (
     <>
       <motion.div
@@ -89,13 +93,21 @@ function AdminLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="login-input"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    className="login-input"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <span
+                    className="absolute right-3 top-3 cursor-pointer"
+                    onClick={toggleShowPassword}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
                 <input
                   type="submit"
                   placeholder="Password"
