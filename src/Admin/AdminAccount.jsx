@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 import { db, auth } from '../config/firebase'; // Import Firestore instance and auth
 import { updateDoc, getDocs, collection, query, where } from 'firebase/firestore';
-import { updateEmail, updatePassword, sendEmailVerification } from 'firebase/auth';
+import { updateEmail, updatePassword, sendEmailVerification, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 function AdminAccount() {
   const [newUserName, setNewUserName] = useState(false);
@@ -13,6 +13,7 @@ function AdminAccount() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false); // State to toggle current password visibility
   const [newEmail, setNewEmail] = useState('');
   const [newPass, setNewPass] = useState('');
+  const [currentPass, setCurrentPass] = useState(''); // State to store current password
   const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
   const [verificationSent, setVerificationSent] = useState(false); // State to track email verification
 
@@ -36,6 +37,7 @@ function AdminAccount() {
   const closeNewPassword = () => {
     setNewPassword(false);
     setNewPass('');
+    setCurrentPass('');
   };
 
   const toggleShowPassword = () => setShowPassword(!showPassword); // Toggle function
@@ -78,6 +80,8 @@ function AdminAccount() {
     try {
       const user = auth.currentUser;
       if (user) {
+        const credential = EmailAuthProvider.credential(user.email, currentPass);
+        await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPass);
         setContributor({ ...contributor, password: newPass });
         localStorage.setItem('contributor', JSON.stringify({ ...contributor, password: newPass }));
@@ -87,6 +91,7 @@ function AdminAccount() {
       }
     } catch (error) {
       console.error('Error updating password: ', error);
+      alert('Current password is incorrect. Please try again.');
     }
   };
 
@@ -143,16 +148,29 @@ function AdminAccount() {
                   className='modal-input'
                   readOnly
                 />
-                <span
-                  className='absolute right-3 top-3 cursor-pointer'
-                  onClick={toggleShowCurrentPassword}
-                >
-                  {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
-                </span>
               </div>
+              
               {newPassword && (
                 <form className='flex flex-col' id='new-password' onSubmit={handlePasswordSubmit}>
-                  <label className='text-maroon-custom'>Change Password:</label>
+                  <label className='text-maroon-custom'>Current Password:</label>
+                  <div className='relative'>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="currentPassword"
+                      placeholder='Current Password'
+                      className='modal-input'
+                      value={currentPass}
+                      onChange={(e) => setCurrentPass(e.target.value)}
+                      required
+                    />
+                    <span
+                      className='absolute right-3 top-3 cursor-pointer'
+                      onClick={toggleShowPassword}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </span>
+                  </div>
+                  <label className='text-maroon-custom'>New Password:</label>
                   <div className='relative'>
                     <input
                       type={showPassword ? "text" : "password"}
