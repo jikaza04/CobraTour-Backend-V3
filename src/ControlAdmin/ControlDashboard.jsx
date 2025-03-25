@@ -13,7 +13,6 @@ import { addDoc, collection, getDocs, updateDoc, doc, deleteDoc, query, where } 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, deleteUser, updateEmail, updatePassword } from 'firebase/auth';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-
 function ControlDashboard() {
   const [controlModal, setControlModal] = useState(false);
   const [totalContributors, setTotalContributors] = useState(0);
@@ -27,6 +26,7 @@ function ControlDashboard() {
     email: '',
     password: ''
   });
+  const [currentPassword, setCurrentPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ function ControlDashboard() {
 
   const [accountView, setAccountView] = useState(false);
 
-  const openAccountView = (contributor) => {
+  const openAccountView = async (contributor) => {
     setSelectedContributor(contributor);
     setEditableContributor({
       name: contributor.name,
@@ -57,11 +57,29 @@ function ControlDashboard() {
       email: contributor.email,
       password: '' // Password will be updated separately
     });
+
+    // Fetch the password for the selected contributor
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, contributor.email, 'current-password'); // Replace 'current-password' with the actual current password
+      const user = userCredential.user;
+      setEditableContributor((prev) => ({ ...prev, password: '*******' })); // Mask the password
+    } catch (error) {
+      console.error('Error fetching password:', error);
+    }
+
     setAccountView(true);
   };
+
   const closeAccountView = () => {
     setAccountView(false);
     setSelectedContributor(null);
+    setCurrentPassword('');
+    setEditableContributor({
+      name: '',
+      employeeID: '',
+      email: '',
+      password: ''
+    });
   };
 
   const [historyModal, setHistoryModal] = useState(false);
@@ -156,37 +174,34 @@ function ControlDashboard() {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref;
-  
-        // Get the user by email
-        let user;
-        if (selectedContributor.password) {
-          const userCredential = await signInWithEmailAndPassword(auth, selectedContributor.email, selectedContributor.password);
-          user = userCredential.user;
-        }
-  
+
+        // Sign in with the current password to verify it
+        const userCredential = await signInWithEmailAndPassword(auth, selectedContributor.email, currentPassword);
+        const user = userCredential.user;
+
         // Update email in Firebase Authentication if it has changed
-        if (editableContributor.email !== selectedContributor.email && user) {
+        if (editableContributor.email !== selectedContributor.email) {
           await updateEmail(user, editableContributor.email);
         }
-  
+
         // Update password in Firebase Authentication if it is provided
-        if (editableContributor.password && user) {
+        if (editableContributor.password) {
           await updatePassword(user, editableContributor.password);
         }
-  
+
         // Update contributor details in Firestore without the password
         await updateDoc(docRef, {
           name: editableContributor.name,
           employeeID: editableContributor.employeeID,
           email: editableContributor.email,
         });
-  
+
         // Update the contributors list
         const allContributors = await getDocs(collection(db, 'Contributors'));
         const activeContributors = allContributors.docs.filter(doc => doc.data().status !== 'Removed');
         setTotalContributors(activeContributors.length);
         setContributors(allContributors.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-  
+
         // Close the account view after successful update
         closeAccountView();
       }
@@ -362,12 +377,38 @@ function ControlDashboard() {
                     required
                     className="w-full"
                   />
-                  <label>Change Password:</label>
+                  <label>Password:</label>
+                  <input
+                    type="password"
+                    name="Admin-Password"
+                    placeholder="Password"
+                    value={editableContributor.password || '*******'}
+                    readOnly
+                    className="w-full"
+                  />
+                  <label>Current Password:</label>
                   <div className="relative w-full">
                     <input
                       type={showPassword ? "text" : "password"}
-                      name="Admin-password"
-                      placeholder="Change Contributor's password"
+                      name="current-password"
+                      placeholder="Current Password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="w-full"
+                    />
+                    <span
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </span>
+                  </div>
+                  <label>New Password:</label>
+                  <div className="relative w-full">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="new-password"
+                      placeholder="New Password"
                       value={editableContributor.password}
                       onChange={(e) => setEditableContributor({ ...editableContributor, password: e.target.value })}
                       className="w-full"
