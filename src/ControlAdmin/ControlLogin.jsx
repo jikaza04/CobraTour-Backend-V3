@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { auth, db } from "../config/firebase"; // Import db from firebase config
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore"; // Import Firestore functions
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 
@@ -15,11 +15,13 @@ function ControlLogin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const [error, setError] = useState("");
+  const [message, setMessage] = useState(""); // State to show success message
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setMessage("");
 
     try {
       // Fetch contributors from Firestore
@@ -35,6 +37,22 @@ function ControlLogin() {
       navigate("/controlDashboard");
     } catch (err) {
       setError("Invalid email or password. Please try again.");
+      console.error(err);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setMessage("Password reset email sent. Please check your inbox.");
+      setError("");
+    } catch (err) {
+      setError("Failed to send password reset email. Please try again.");
       console.error(err);
     }
   };
@@ -87,6 +105,7 @@ function ControlLogin() {
                 />
                 <button
                   type="button"
+                  onClick={handleForgotPassword}
                   className="border-maroon-custom border p-1 rounded-md duration-300 hover:bg-maroon-custom hover:text-white"
                 >
                   Forgot Password
@@ -94,6 +113,7 @@ function ControlLogin() {
               </span>
               <span className="text-xs break-words">
                 {error && <p className="text-maroon-custom text-center">{error}</p>}
+                {message && <p className="text-green-500 text-center">{message}</p>}
               </span>
               <div className="flex justify-between"></div>
             </form>
